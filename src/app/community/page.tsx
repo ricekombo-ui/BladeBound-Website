@@ -7,7 +7,7 @@ import { LINKS } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Community",
   description:
-    "Join the BladeBound Saga Discord. A community for Daggerheart players, GMs, and fans who take the craft seriously.",
+    "Join the BladeBound Discord. A community for Daggerheart players, GMs, and fans who take the craft seriously.",
 };
 
 const communityPerks = [

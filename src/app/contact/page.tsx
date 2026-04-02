@@ -6,7 +6,7 @@ import { LINKS, SITE } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Get in touch with BladeBound Saga for collaboration, media inquiries, private game requests, or general questions.",
+    "Get in touch with BladeBound for collaboration, media inquiries, private game requests, or general questions.",
 };
 
 const socialLinks = [

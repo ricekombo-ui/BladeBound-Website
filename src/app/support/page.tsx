@@ -7,7 +7,7 @@ import { LINKS } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Support",
   description:
-    "Support BladeBound Saga on Patreon. Get early access, bonus resources, exclusive games, and help build more Daggerheart content.",
+    "Support BladeBound on Patreon. Get early access, bonus resources, exclusive games, and help build more Daggerheart content.",
 };
 
 const tiers = [
@@ -67,7 +67,7 @@ export default function SupportPage() {
             Back What You Want More Of
           </h1>
           <p className="text-stone text-lg md:text-xl max-w-2xl leading-relaxed mb-10">
-            BladeBound Saga is an independent project. Supporting it means more content, more games, better resources, and a stronger community. You get real value in return.
+            BladeBound is an independent project. Supporting it means more content, more games, better resources, and a stronger community. You get real value in return.
           </p>
           <Button href={LINKS.patreon} variant="primary" size="lg" external>
             Support on Patreon
@@ -87,7 +87,7 @@ export default function SupportPage() {
             </h2>
             <div className="space-y-4 text-stone text-base leading-relaxed">
               <p>
-                Every video, session, guide, and resource produced by BladeBound Saga exists because it was worth making. Not because an algorithm demanded it. Not because it was optimized for engagement over substance.
+                Every video, session, guide, and resource produced by BladeBound exists because it was worth making. Not because an algorithm demanded it. Not because it was optimized for engagement over substance.
               </p>
               <p>
                 That kind of work takes time and commitment to sustain. Patron support is what makes it possible to keep the quality high and the output consistent without compromising the purpose of the project.

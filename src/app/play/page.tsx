@@ -8,7 +8,7 @@ import { LINKS } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Play",
   description:
-    "Book a seat at a BladeBound Saga Daggerheart game. Narrative-first, beginner-friendly, professionally run one-shots and campaigns through StartPlaying.",
+    "Book a seat at a BladeBound Daggerheart game. Narrative-first, beginner-friendly, professionally run one-shots and campaigns through StartPlaying.",
 };
 
 const whatToExpect = [

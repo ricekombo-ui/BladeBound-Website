@@ -7,7 +7,7 @@ import { LINKS } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Resources",
   description:
-    "Free Daggerheart tools, connection questions, build guides, and beginner resources from BladeBound Saga.",
+    "Free Daggerheart tools, connection questions, build guides, and beginner resources from BladeBound.",
 };
 
 const freeResources = [

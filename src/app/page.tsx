@@ -9,9 +9,9 @@ import Button from "@/components/ui/Button";
 import { LINKS } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "BladeBound Saga | Narrative-First Daggerheart Content",
+  title: "BladeBound | Narrative-First Daggerheart Content",
   description:
-    "BladeBound Saga is a home for narrative-first Daggerheart content, cinematic play, and a community built around serious tabletop craft.",
+    "BladeBound is a home for narrative-first Daggerheart content, cinematic play, and a community built around serious tabletop craft.",
 };
 
 const whatWeOffer = [
@@ -53,7 +53,7 @@ const featuredSeries = [
     title: "Sage Touched",
     description:
       "A Daggerheart discussion and breakdown series covering classes, campaign frames, mechanics, and design. The entry point for anyone new to the game.",
-    href: LINKS.youtube,
+    href: "https://www.youtube.com/playlist?list=PLoQqS6kdYti3BOL9CHTpTH8i3zowr4Zlt",
     external: true,
     accent: "#d56047",
   },
@@ -62,7 +62,7 @@ const featuredSeries = [
     title: "Campaign Frame Gauntlet",
     description:
       "Official Daggerheart campaign frames, showcased through focused one-shots. See how each frame plays at a real table before you choose your next adventure.",
-    href: LINKS.youtube,
+    href: "https://www.youtube.com/playlist?list=PLoQqS6kdYti2tuf2pw5nsnV5rtrcBgGQ6",
     external: true,
     accent: "#ae4641",
   },

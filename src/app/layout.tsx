@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import ClientShell from "@/components/layout/ClientShell";
 import { SITE } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -33,9 +34,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col bg-void text-bone">
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <ClientShell>
+          <Navbar />
+          <main className="flex-1 relative z-10">{children}</main>
+          <Footer />
+        </ClientShell>
       </body>
     </html>
   );

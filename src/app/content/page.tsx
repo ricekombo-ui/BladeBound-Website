@@ -9,7 +9,7 @@ import { LINKS } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Content",
   description:
-    "Daggerheart guides, GM tips, actual play, and system education. Browse BladeBound Saga's full content library.",
+    "Daggerheart guides, GM tips, actual play, and system education. Browse BladeBound's full content library.",
 };
 
 const featuredSeries = [
@@ -18,7 +18,7 @@ const featuredSeries = [
     title: "Sage Touched",
     description:
       "A dedicated breakdown and discussion series for Daggerheart. Classes, campaign frames, mechanics, and design philosophy covered from both GM and player perspectives. The definitive starting point for anyone learning the game.",
-    href: LINKS.youtube,
+    href: "https://www.youtube.com/playlist?list=PLoQqS6kdYti3BOL9CHTpTH8i3zowr4Zlt",
     external: true,
     accent: "#d56047",
   },
@@ -27,7 +27,7 @@ const featuredSeries = [
     title: "Campaign Frame Gauntlet",
     description:
       "Each official Daggerheart campaign frame gets its own focused one-shot. Watch how the tone, stakes, and mechanics shift across different frames. System education and live play combined.",
-    href: LINKS.youtube,
+    href: "https://www.youtube.com/playlist?list=PLoQqS6kdYti2tuf2pw5nsnV5rtrcBgGQ6",
     external: true,
     accent: "#ae4641",
   },

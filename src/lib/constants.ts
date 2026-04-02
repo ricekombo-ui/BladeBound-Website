@@ -1,10 +1,10 @@
 export const SITE = {
-  name: "BladeBound Saga",
+  name: "BladeBound",
   tagline: "Narrative-First Daggerheart Content",
   domain: "bladebound.games",
   email: "mailto:hello@bladebound.games",
   description:
-    "BladeBound Saga is a Daggerheart-focused content brand and tabletop community built around cinematic play, system education, and narrative-first storytelling.",
+    "BladeBound is a Daggerheart-focused content brand and tabletop community built around cinematic play, system education, and narrative-first storytelling.",
 };
 
 export const LINKS = {

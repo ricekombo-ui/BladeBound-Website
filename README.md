@@ -1,6 +1,6 @@
-# BladeBound Saga
+# BladeBound
 
-Production website for BladeBound Saga, a Daggerheart-focused content brand.
+Production website for BladeBound, a Daggerheart-focused content brand.
 
 **Stack:** Next.js 15, TypeScript, Tailwind CSS
 
@@ -128,7 +128,7 @@ Place your logo at `public/logo.png` (or `.svg`) and update `src/components/layo
 ```tsx
 import Image from "next/image";
 // Replace the letter mark div with:
-<Image src="/logo.png" alt="BladeBound Saga" width={32} height={32} />
+<Image src="/logo.png" alt="BladeBound" width={32} height={32} />
 ```
 
 ---

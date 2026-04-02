@@ -7,6 +7,7 @@ interface SeriesCardProps {
   href: string;
   external?: boolean;
   accent?: string;
+  linkText?: string;
 }
 
 export default function SeriesCard({
@@ -16,12 +17,13 @@ export default function SeriesCard({
   href,
   external = false,
   accent = "#d56047",
+  linkText = "Watch Now",
 }: SeriesCardProps) {
   return (
     <Link
       href={href}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-      className="group block bg-void border border-white/5 rounded-lg overflow-hidden hover:border-ember/30 transition-all duration-200"
+      className="group block bg-void border border-white/5 rounded-lg overflow-hidden hover:border-ember/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-ember/5"
     >
       <div className="h-1 w-full" style={{ backgroundColor: accent }} />
       <div className="p-6">
@@ -32,8 +34,8 @@ export default function SeriesCard({
           {title}
         </h3>
         <p className="text-stone text-sm leading-relaxed">{description}</p>
-        <span className="inline-block mt-4 text-ember text-xs font-medium">
-          Watch Now &rarr;
+        <span className="inline-flex items-center gap-1 mt-4 text-ember text-xs font-medium group-hover:gap-2 transition-all duration-300">
+          {linkText} <span>&rarr;</span>
         </span>
       </div>
     </Link>
