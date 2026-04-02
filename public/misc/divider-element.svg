@@ -1,0 +1,25 @@
+<svg width="1440" height="120" viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Base Line -->
+  <line x1="0" y1="60" x2="1440" y2="60" stroke="#69354c" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- Center Emblem -->
+  <g transform="translate(720,60)">
+
+    <!-- Circle -->
+    <circle cx="0" cy="0" r="28" stroke="#d56047" stroke-opacity="0.4" stroke-width="1"/>
+
+    <!-- Inner Circle -->
+    <circle cx="0" cy="0" r="14" stroke="#d56047" stroke-opacity="0.25" stroke-width="1"/>
+
+    <!-- Blade Shape -->
+    <path d="M0 -20 L3 0 L0 22 L-3 0 Z" fill="#fdf2e1" fill-opacity="0.7"/>
+
+    <!-- Crossguard -->
+    <line x1="-10" y1="0" x2="10" y2="0" stroke="#fdf2e1" stroke-opacity="0.6" stroke-width="1"/>
+
+    <!-- Subtle Side Marks -->
+    <line x1="-50" y1="0" x2="-20" y2="0" stroke="#d56047" stroke-opacity="0.2" stroke-width="1"/>
+    <line x1="20" y1="0" x2="50" y2="0" stroke="#d56047" stroke-opacity="0.2" stroke-width="1"/>
+
+  </g>
+</svg>

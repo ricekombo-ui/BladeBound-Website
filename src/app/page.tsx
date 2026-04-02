@@ -6,6 +6,9 @@ import SeriesCard from "@/components/sections/SeriesCard";
 import ProofSection from "@/components/sections/ProofSection";
 import CTABlock from "@/components/ui/CTABlock";
 import Button from "@/components/ui/Button";
+import ScrollReveal from "@/components/ui/ScrollReveal";
+import VideoEmbed from "@/components/ui/VideoEmbed";
+import EmberDivider from "@/components/ui/EmberDivider";
 import { LINKS } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -84,156 +87,224 @@ export default function HomePage() {
 
       {/* What BladeBound Offers */}
       <SectionWrapper id="what-we-offer">
-        <div className="mb-12">
-          <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
-            What We Do
-          </span>
-          <h2 className="font-serif text-3xl md:text-4xl text-bone mb-3">
-            Everything You Need at One Table
-          </h2>
-          <p className="text-stone text-base md:text-lg max-w-xl">
-            Content, community, games, and resources. All focused on Daggerheart, all built around narrative-first play.
-          </p>
-        </div>
+        <ScrollReveal direction="up">
+          <div className="mb-12">
+            <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
+              What We Do
+            </span>
+            <h2 className="font-serif text-3xl md:text-4xl text-bone mb-3">
+              Everything You Need at One Table
+            </h2>
+            <p className="text-stone text-base md:text-lg max-w-xl">
+              Content, community, games, and resources. All focused on Daggerheart, all built around narrative-first play.
+            </p>
+          </div>
+        </ScrollReveal>
         <FeatureCards features={whatWeOffer} columns={3} />
       </SectionWrapper>
 
-      {/* Divider */}
-      <div className="section-divider" />
+      <EmberDivider />
 
       {/* Featured Series */}
       <SectionWrapper id="featured-series">
-        <div className="mb-12">
-          <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
-            Featured Content
-          </span>
-          <h2 className="font-serif text-3xl md:text-4xl text-bone mb-3">
-            Content Worth Watching
-          </h2>
-          <p className="text-stone text-base md:text-lg max-w-xl">
-            Three series. Each one serves a different purpose. All of them are worth your time.
-          </p>
-        </div>
+        <ScrollReveal direction="up">
+          <div className="mb-12">
+            <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
+              Featured Content
+            </span>
+            <h2 className="font-serif text-3xl md:text-4xl text-bone mb-3">
+              Content Worth Watching
+            </h2>
+            <p className="text-stone text-base md:text-lg max-w-xl">
+              Three series. Each one serves a different purpose. All of them are worth your time.
+            </p>
+          </div>
+        </ScrollReveal>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featuredSeries.map((series) => (
-            <SeriesCard key={series.title} {...series} />
+          {featuredSeries.map((series, i) => (
+            <SeriesCard key={series.title} {...series} index={i} />
           ))}
         </div>
-        <div className="mt-8 text-center">
-          <Button href={LINKS.youtube} variant="secondary" external>
-            Browse All Content on YouTube
-          </Button>
+        <ScrollReveal delay={500} direction="up">
+          <div className="mt-8 text-center">
+            <Button href={LINKS.youtube} variant="secondary" external>
+              Browse All Content on YouTube
+            </Button>
+          </div>
+        </ScrollReveal>
+      </SectionWrapper>
+
+      <EmberDivider />
+
+      {/* Video Showcase - Onboarding + Authority */}
+      <SectionWrapper id="watch">
+        <ScrollReveal direction="up">
+          <div className="mb-12 text-center">
+            <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
+              See It in Action
+            </span>
+            <h2 className="font-serif text-3xl md:text-4xl text-bone mb-3">
+              Watch Before You Decide
+            </h2>
+            <p className="text-stone text-base md:text-lg max-w-xl mx-auto">
+              Get a feel for what BladeBound content looks like. From system breakdowns to full sessions at the table.
+            </p>
+          </div>
+        </ScrollReveal>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <ScrollReveal delay={0} direction="left">
+            <VideoEmbed
+              videoId="https://youtu.be/zxPCnBOg_-8"
+              title="Sage Touched: The Motherboard — Daggerheart Breakdown"
+            />
+          </ScrollReveal>
+          <ScrollReveal delay={150} direction="right">
+            <VideoEmbed
+              videoId="https://youtu.be/aGegKuhWblQ"
+              title="Sage Touched: The Seraph — Daggerheart Class Deep Dive"
+            />
+          </ScrollReveal>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <ScrollReveal delay={0} direction="up">
+            <VideoEmbed
+              videoId="https://youtu.be/LHoghRxzSf4"
+              title="Campaign Frame Gauntlet: Age of Umbra"
+            />
+          </ScrollReveal>
+          <ScrollReveal delay={150} direction="up">
+            <VideoEmbed
+              videoId="https://youtube.com/shorts/bC3wJqDQg8k"
+              title="GM Tip: Player Engagement"
+              isShort
+            />
+          </ScrollReveal>
+          <ScrollReveal delay={300} direction="up">
+            <VideoEmbed
+              videoId="https://youtube.com/shorts/JAO7da2RpV4"
+              title="The Golden Trio"
+              isShort
+            />
+          </ScrollReveal>
         </div>
       </SectionWrapper>
 
-      {/* Divider */}
-      <div className="section-divider" />
+      <EmberDivider />
 
       {/* Play CTA */}
       <SectionWrapper id="play" tight>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
-              Play Daggerheart
-            </span>
-            <h2 className="font-serif text-3xl md:text-4xl text-bone mb-4">
-              Sit at a Table That Takes Story Seriously
-            </h2>
-            <p className="text-stone text-base leading-relaxed mb-3">
-              BladeBound games are narrative-first, mechanically grounded, and welcoming to players of all experience levels. If you have never played Daggerheart, this is the best possible place to start.
-            </p>
-            <p className="text-stone text-base leading-relaxed mb-6">
-              Over 200 sessions run. Every game designed to give players a real story to take home.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Button href={LINKS.startplaying} variant="primary" size="lg" external>
-                View Games on StartPlaying
-              </Button>
-              <Button href="/play" variant="ghost" size="lg">
-                Learn More
-              </Button>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { title: "Narrative First", body: "Story drives every session. Mechanics serve the fiction, not the other way around." },
-              { title: "Beginner Friendly", body: "New to Daggerheart? New to TTRPGs? We have you covered with thorough onboarding." },
-              { title: "Cinematic Play", body: "Scenes are crafted. Moments are built. Your character will matter." },
-              { title: "Active GM Support", body: "Session zero, clear expectations, and a GM who knows the system deeply." },
-            ].map((item) => (
-              <div key={item.title} className="bg-shadow/10 border border-white/5 rounded-lg p-4">
-                <h4 className="font-serif text-sm text-ember mb-2">{item.title}</h4>
-                <p className="text-stone text-xs leading-relaxed">{item.body}</p>
+          <ScrollReveal direction="left">
+            <div>
+              <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
+                Play Daggerheart
+              </span>
+              <h2 className="font-serif text-3xl md:text-4xl text-bone mb-4">
+                Sit at a Table That Takes Story Seriously
+              </h2>
+              <p className="text-stone text-base leading-relaxed mb-3">
+                BladeBound games are narrative-first, mechanically grounded, and welcoming to players of all experience levels. If you have never played Daggerheart, this is the best possible place to start.
+              </p>
+              <p className="text-stone text-base leading-relaxed mb-6">
+                Over 200 sessions run. Every game designed to give players a real story to take home.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Button href={LINKS.startplaying} variant="primary" size="lg" external>
+                  View Games on StartPlaying
+                </Button>
+                <Button href="/play" variant="ghost" size="lg">
+                  Learn More
+                </Button>
               </div>
-            ))}
-          </div>
+            </div>
+          </ScrollReveal>
+          <ScrollReveal direction="right" delay={200}>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { title: "Narrative First", body: "Story drives every session. Mechanics serve the fiction, not the other way around." },
+                { title: "Beginner Friendly", body: "New to Daggerheart? New to TTRPGs? We have you covered with thorough onboarding." },
+                { title: "Cinematic Play", body: "Scenes are crafted. Moments are built. Your character will matter." },
+                { title: "Active GM Support", body: "Session zero, clear expectations, and a GM who knows the system deeply." },
+              ].map((item) => (
+                <div key={item.title} className="bg-shadow/10 border border-white/5 rounded-lg p-4 hover:border-ember/20 hover:bg-shadow/20 transition-all duration-300">
+                  <h4 className="font-serif text-sm text-ember mb-2">{item.title}</h4>
+                  <p className="text-stone text-xs leading-relaxed">{item.body}</p>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
         </div>
       </SectionWrapper>
 
-      {/* Divider */}
-      <div className="section-divider" />
+      <EmberDivider />
 
       {/* Proof */}
       <SectionWrapper tight>
-        <div className="mb-10 text-center">
-          <h2 className="font-serif text-2xl md:text-3xl text-bone">
-            Built on Real Table Experience
-          </h2>
-        </div>
+        <ScrollReveal direction="up">
+          <div className="mb-10 text-center">
+            <h2 className="font-serif text-2xl md:text-3xl text-bone">
+              Built on Real Table Experience
+            </h2>
+          </div>
+        </ScrollReveal>
         <ProofSection />
       </SectionWrapper>
 
-      {/* Divider */}
-      <div className="section-divider" />
+      <EmberDivider />
 
       {/* Community CTA */}
       <SectionWrapper tight>
-        <CTABlock
-          label="Community"
-          title="The Story Goes Further Together"
-          body="Join the BladeBound Discord to connect with Daggerheart players and GMs, get updates on games and content, and find your next table."
-          primaryText="Join the Discord"
-          primaryHref={LINKS.discord}
-          primaryExternal
-          secondaryText="Learn More"
-          secondaryHref="/community"
-        />
+        <ScrollReveal direction="up">
+          <CTABlock
+            label="Community"
+            title="The Story Goes Further Together"
+            body="Join the BladeBound Discord to connect with Daggerheart players and GMs, get updates on games and content, and find your next table."
+            primaryText="Join the Discord"
+            primaryHref={LINKS.discord}
+            primaryExternal
+            secondaryText="Learn More"
+            secondaryHref="/community"
+          />
+        </ScrollReveal>
       </SectionWrapper>
 
-      {/* Divider */}
-      <div className="section-divider" />
+      <EmberDivider />
 
       {/* Support CTA */}
       <SectionWrapper tight>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          <div>
-            <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
-              Support the Work
-            </span>
-            <h2 className="font-serif text-3xl md:text-4xl text-bone mb-4">
-              Back What You Want to See More Of
-            </h2>
-            <p className="text-stone text-base leading-relaxed mb-6">
-              BladeBound exists because people like you value this kind of work. Supporting the project means more content, more games, more resources, and more community infrastructure. You also get direct value in return.
-            </p>
-            <Button href={LINKS.patreon} variant="primary" size="lg" external>
-              Support on Patreon
-            </Button>
-          </div>
-          <div className="space-y-3">
-            {[
-              "Early access to new content and releases",
-              "Bonus resources: connection questions, build guides, supplements",
-              "Access to exclusive supporter games",
-              "Behind-the-scenes updates and progress notes",
-              "Direct input on future projects and content direction",
-            ].map((item) => (
-              <div key={item} className="flex items-start gap-3">
-                <span className="text-ember mt-0.5 flex-shrink-0">✓</span>
-                <span className="text-stone text-sm">{item}</span>
-              </div>
-            ))}
-          </div>
+          <ScrollReveal direction="left">
+            <div>
+              <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
+                Support the Work
+              </span>
+              <h2 className="font-serif text-3xl md:text-4xl text-bone mb-4">
+                Back What You Want to See More Of
+              </h2>
+              <p className="text-stone text-base leading-relaxed mb-6">
+                BladeBound exists because people like you value this kind of work. Supporting the project means more content, more games, more resources, and more community infrastructure. You also get direct value in return.
+              </p>
+              <Button href={LINKS.patreon} variant="primary" size="lg" external>
+                Support on Patreon
+              </Button>
+            </div>
+          </ScrollReveal>
+          <ScrollReveal direction="right" delay={200}>
+            <div className="space-y-3">
+              {[
+                "Early access to new content and releases",
+                "Bonus resources: connection questions, build guides, supplements",
+                "Access to exclusive supporter games",
+                "Behind-the-scenes updates and progress notes",
+                "Direct input on future projects and content direction",
+              ].map((item, i) => (
+                <div key={item} className="flex items-start gap-3 opacity-0 animate-fade-in-up" style={{ animationDelay: `${i * 100}ms`, animationFillMode: "forwards" }}>
+                  <span className="text-ember mt-0.5 flex-shrink-0">✓</span>
+                  <span className="text-stone text-sm">{item}</span>
+                </div>
+              ))}
+            </div>
+          </ScrollReveal>
         </div>
       </SectionWrapper>
     </>
