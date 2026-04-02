@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+:root {
+  --color-ember: #d56047;
+  --color-crimson: #ae4641;
+  --color-void: #070416;
+  --color-bone: #fdf2e1;
+  --color-shadow: #443859;
+  --color-plum: #69354c;
+  --color-dust: #ce7267;
+  --color-stone: #79717b;
+  --color-accent: #914049;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #070416;
+  color: #fdf2e1;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, #d56047, #ce7267);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .border-ember {
+    border-color: #d56047;
+  }
+
+  .glow-ember {
+    box-shadow: 0 0 20px rgba(213, 96, 71, 0.2);
+  }
+
+  .section-divider {
+    border-top: 1px solid rgba(253, 242, 225, 0.08);
+  }
+}
