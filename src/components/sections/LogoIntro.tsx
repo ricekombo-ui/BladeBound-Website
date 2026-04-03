@@ -6,8 +6,8 @@ export default function LogoIntro() {
   const [phase, setPhase] = useState<"logo" | "fade" | "done">("logo");
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase("fade"), 2200);
-    const t2 = setTimeout(() => setPhase("done"), 2800);
+    const t1 = setTimeout(() => setPhase("fade"), 1400);
+    const t2 = setTimeout(() => setPhase("done"), 1900);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -18,7 +18,7 @@ export default function LogoIntro() {
 
   return (
     <div
-      className={`fixed inset-0 z-[100] flex items-center justify-center bg-void transition-opacity duration-600 ${
+      className={`fixed inset-0 z-[100] flex items-center justify-center bg-void transition-opacity duration-500 ${
         phase === "fade" ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
     >
