@@ -32,8 +32,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen flex flex-col bg-void text-bone">
+    <html lang="en" data-theme="dark" data-scroll-behavior="smooth">
+      <body className="min-h-screen flex flex-col transition-colors duration-500">
         <ClientShell>
           <Navbar />
           <main className="flex-1 relative z-10">{children}</main>

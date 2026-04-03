@@ -252,21 +252,27 @@ export default function HomePage() {
 
       <EmberDivider />
 
-      {/* Community CTA */}
-      <SectionWrapper tight>
-        <ScrollReveal direction="up">
-          <CTABlock
-            label="Community"
-            title="The Story Goes Further Together"
-            body="Join the BladeBound Discord to connect with Daggerheart players and GMs, get updates on games and content, and find your next table."
-            primaryText="Join the Discord"
-            primaryHref={LINKS.discord}
-            primaryExternal
-            secondaryText="Learn More"
-            secondaryHref="/community"
-          />
-        </ScrollReveal>
-      </SectionWrapper>
+      {/* Community CTA — with hosts watermark */}
+      <div className="relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-center bg-no-repeat bg-contain opacity-[0.06] pointer-events-none"
+          style={{ backgroundImage: "url('/background-hosts.png')" }}
+        />
+        <SectionWrapper tight>
+          <ScrollReveal direction="up">
+            <CTABlock
+              label="Community"
+              title="The Story Goes Further Together"
+              body="Join the BladeBound Discord to connect with Daggerheart players and GMs, get updates on games and content, and find your next table."
+              primaryText="Join the Discord"
+              primaryHref={LINKS.discord}
+              primaryExternal
+              secondaryText="Learn More"
+              secondaryHref="/community"
+            />
+          </ScrollReveal>
+        </SectionWrapper>
+      </div>
 
       <EmberDivider />
 

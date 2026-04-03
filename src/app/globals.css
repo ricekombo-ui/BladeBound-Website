@@ -4,6 +4,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== THEME VARIABLES ===== */
+
+/* Dark mode (default) */
+[data-theme="dark"] {
+  --color-bg: #070416;
+  --color-text: #fdf2e1;
+  --color-text-muted: #79717b;
+  --color-surface: rgba(68, 56, 89, 0.1);
+  --color-border: rgba(255, 255, 255, 0.05);
+  --color-border-hover: rgba(213, 96, 71, 0.3);
+  --color-nav-bg: rgba(7, 4, 22, 0.9);
+}
+
+/* Light mode */
+[data-theme="light"] {
+  --color-bg: #fdf2e1;
+  --color-text: #1a1025;
+  --color-text-muted: #6b5f70;
+  --color-surface: rgba(68, 56, 89, 0.06);
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-hover: rgba(213, 96, 71, 0.4);
+  --color-nav-bg: rgba(253, 242, 225, 0.92);
+}
+
+/* Brand colors — always the same */
 :root {
   --color-ember: #d56047;
   --color-crimson: #ae4641;
@@ -21,21 +46,71 @@ html {
 }
 
 body {
-  background-color: #070416;
-  color: #fdf2e1;
+  background-color: var(--color-bg);
+  color: var(--color-text);
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 h1, h2, h3 {
   font-family: 'Playfair Display', Georgia, serif;
 }
 
+/* Light mode overrides for text-bone / text-stone / bg-void etc */
+[data-theme="light"] .text-bone {
+  color: #1a1025;
+}
+
+[data-theme="light"] .text-stone {
+  color: #6b5f70;
+}
+
+[data-theme="light"] .bg-void {
+  background-color: #fdf2e1;
+}
+
+[data-theme="light"] .bg-void\/90 {
+  background-color: rgba(253, 242, 225, 0.92);
+}
+
+[data-theme="light"] .bg-void\/95 {
+  background-color: rgba(253, 242, 225, 0.95);
+}
+
+[data-theme="light"] .border-white\/5 {
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .border-white\/10 {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .bg-shadow\/10 {
+  background-color: rgba(68, 56, 89, 0.06);
+}
+
+[data-theme="light"] .bg-shadow\/20 {
+  background-color: rgba(68, 56, 89, 0.08);
+}
+
+[data-theme="light"] .text-bone\/60 {
+  color: rgba(26, 16, 37, 0.6);
+}
+
+[data-theme="light"] .text-bone\/70 {
+  color: rgba(26, 16, 37, 0.7);
+}
+
+[data-theme="light"] .text-stone\/70 {
+  color: rgba(107, 95, 112, 0.7);
+}
+
 /* Selection styling */
 ::selection {
   background-color: rgba(213, 96, 71, 0.3);
-  color: #fdf2e1;
+  color: var(--color-text);
 }
 
 @layer utilities {
@@ -55,7 +130,7 @@ h1, h2, h3 {
   }
 
   .section-divider {
-    border-top: 1px solid rgba(253, 242, 225, 0.08);
+    border-top: 1px solid var(--color-border);
   }
 }
 
