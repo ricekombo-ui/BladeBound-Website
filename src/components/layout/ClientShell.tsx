@@ -2,7 +2,7 @@
 
 import { ReactNode } from "react";
 import { ThemeProvider } from "@/context/ThemeContext";
-import LogoIntro from "@/components/sections/LogoIntro";
+import DualityLanding from "@/components/sections/DualityLanding";
 import ParticleField from "@/components/ui/ParticleField";
 import DiceField from "@/components/ui/DiceField";
 import FloatingPlatformBar from "@/components/ui/FloatingPlatformBar";
@@ -11,7 +11,7 @@ import ThemeToggle from "@/components/ui/ThemeToggle";
 export default function ClientShell({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider>
-      <LogoIntro />
+      <DualityLanding />
       <ParticleField />
       <DiceField />
       {children}

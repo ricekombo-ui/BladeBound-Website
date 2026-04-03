@@ -27,8 +27,8 @@ export default function Hero() {
   const [entered, setEntered] = useState(false);
 
   useEffect(() => {
-    // Faster entrance — synced with shortened logo intro
-    const timer = setTimeout(() => setEntered(true), 1950);
+    // Entrance triggers immediately — DualityLanding unmounts itself when done
+    const timer = setTimeout(() => setEntered(true), 300);
     return () => clearTimeout(timer);
   }, []);
 
