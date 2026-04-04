@@ -104,8 +104,8 @@ export default function ResourcesPage() {
               <h3 className="font-serif text-lg text-bone mb-2">{item.title}</h3>
               <p className="text-stone text-sm leading-relaxed mb-4">{item.description}</p>
               {item.status === "Free Download" ? (
-                <Button href={item.href} variant="secondary" size="sm">
-                  Download
+                <Button href={LINKS.discord} variant="secondary" size="sm" external>
+                  Join Discord to Access
                 </Button>
               ) : (
                 <span className="text-stone text-xs italic">Coming soon</span>

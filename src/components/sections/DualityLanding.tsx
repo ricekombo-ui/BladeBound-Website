@@ -249,7 +249,13 @@ const sound = typeof window !== "undefined" ? new SoundEngine() : null;
 
 // ─── Component ──────────────────────────────────────────────────────────────
 export default function DualityLanding() {
-  const [phase, setPhase] = useState<"idle" | "rolling" | "settling" | "result" | "exit" | "done">("idle");
+  // Skip if already entered this session
+  const [skipped] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return sessionStorage.getItem("bb_entered") === "true";
+  });
+
+  const [phase, setPhase] = useState<"idle" | "rolling" | "settling" | "result" | "exit" | "done">(() => skipped ? "done" : "idle");
   const [hopeVal, setHopeVal] = useState("?");
   const [fearVal, setFearVal] = useState("?");
   const [dominant, setDominant] = useState<"hope" | "fear" | null>(null);
@@ -341,9 +347,11 @@ export default function DualityLanding() {
       // Result fades in after dice are gone
       setTimeout(() => { setShowResult(true); setPhase("result"); }, 2100);
 
-      // Hold result for 5s then offer transition
+      // Auto-advance after 5s with fade
       setTimeout(() => {
         sound?.transition();
+        sessionStorage.setItem("bb_entered", "true");
+        sessionStorage.setItem("bb_result", dom);
         setPhase("exit");
         setTimeout(() => setPhase("done"), 1600);
       }, 7200);
@@ -353,6 +361,7 @@ export default function DualityLanding() {
   const skip = useCallback(() => {
     if (phase === "exit" || phase === "done") return;
     sound?.transition();
+    sessionStorage.setItem("bb_entered", "true");
     setPhase("exit");
     setTimeout(() => setPhase("done"), 1600);
   }, [phase]);
@@ -466,9 +475,9 @@ export default function DualityLanding() {
           )}
         </div>
 
-        {phase === "idle" && (
+        {(phase === "idle" || phase === "rolling" || phase === "settling") && (
           <button className="dl-skip" onClick={skip} onMouseEnter={() => sound?.tick(0.05)}>
-            Enter BladeBound
+            Skip
           </button>
         )}
       </div>
@@ -690,7 +699,7 @@ export default function DualityLanding() {
           border: 1px solid rgba(253,242,225,0.1);
           padding: 0.6rem 1.4rem; cursor: pointer; outline: none;
           transition: color 200ms, border-color 200ms;
-          opacity: 0; animation: dl-fade 1s 1.8s ease-out forwards;
+          opacity: 0; animation: dl-fade 1s 3s ease-out forwards;
         }
         .dl-skip:hover { color: rgba(253,242,225,0.7); border-color: rgba(253,242,225,0.3); }
 

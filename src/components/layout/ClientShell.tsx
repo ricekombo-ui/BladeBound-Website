@@ -7,6 +7,7 @@ import ParticleField from "@/components/ui/ParticleField";
 import DiceField from "@/components/ui/DiceField";
 import FloatingPlatformBar from "@/components/ui/FloatingPlatformBar";
 import ThemeToggle from "@/components/ui/ThemeToggle";
+import AmbientTheme from "@/components/ui/AmbientTheme";
 
 export default function ClientShell({ children }: { children: ReactNode }) {
   return (
@@ -14,6 +15,7 @@ export default function ClientShell({ children }: { children: ReactNode }) {
       <DualityLanding />
       <ParticleField />
       <DiceField />
+      <AmbientTheme />
       {children}
       <FloatingPlatformBar />
       <ThemeToggle />

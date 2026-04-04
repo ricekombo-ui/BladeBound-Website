@@ -3,42 +3,7 @@ import { LINKS, NAV_LINKS, SITE } from "@/lib/constants";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-void border-t border-white/5 mt-20">
-      {/* Top CTA bar */}
-      <div className="border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <span className="text-stone text-sm">Stay connected:</span>
-            <div className="flex items-center gap-3">
-              <Link
-                href={LINKS.youtube}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs font-medium bg-red-900/20 border border-red-800/30 text-red-400 hover:bg-red-900/40 px-4 py-2 rounded-full transition-all"
-              >
-                YouTube
-              </Link>
-              <Link
-                href={LINKS.discord}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs font-medium bg-indigo-900/20 border border-indigo-800/30 text-indigo-400 hover:bg-indigo-900/40 px-4 py-2 rounded-full transition-all"
-              >
-                Discord
-              </Link>
-              <Link
-                href={LINKS.patreon}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs font-medium bg-ember/10 border border-ember/30 text-ember hover:bg-ember/20 px-4 py-2 rounded-full transition-all"
-              >
-                Patreon
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <footer className="relative border-t border-white/5 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
@@ -50,15 +15,27 @@ export default function Footer() {
             <p className="text-stone text-sm leading-relaxed max-w-sm">
               Narrative-first Daggerheart content, cinematic play, and a community built around serious tabletop craft.
             </p>
-            <div className="flex gap-4 mt-5">
-              <Link href={LINKS.youtube} target="_blank" rel="noopener noreferrer" className="text-stone hover:text-ember text-sm transition-colors">YouTube</Link>
-              <Link href={LINKS.discord} target="_blank" rel="noopener noreferrer" className="text-stone hover:text-ember text-sm transition-colors">Discord</Link>
-              <Link href={LINKS.patreon} target="_blank" rel="noopener noreferrer" className="text-stone hover:text-ember text-sm transition-colors">Patreon</Link>
-              <Link href={LINKS.instagram} target="_blank" rel="noopener noreferrer" className="text-stone hover:text-ember text-sm transition-colors">Instagram</Link>
+            <div className="flex gap-5 mt-5">
+              <Link href={LINKS.youtube} target="_blank" rel="noopener noreferrer" className="group relative text-stone hover:text-red-400 text-sm transition-colors">
+                YouTube
+                <span className="absolute bottom-0 left-0 w-0 h-px bg-red-400 group-hover:w-full transition-all duration-300" />
+              </Link>
+              <Link href={LINKS.discord} target="_blank" rel="noopener noreferrer" className="group relative text-stone hover:text-indigo-400 text-sm transition-colors">
+                Discord
+                <span className="absolute bottom-0 left-0 w-0 h-px bg-indigo-400 group-hover:w-full transition-all duration-300" />
+              </Link>
+              <Link href={LINKS.patreon} target="_blank" rel="noopener noreferrer" className="group relative text-stone hover:text-ember text-sm transition-colors">
+                Patreon
+                <span className="absolute bottom-0 left-0 w-0 h-px bg-ember group-hover:w-full transition-all duration-300" />
+              </Link>
+              <Link href={LINKS.instagram} target="_blank" rel="noopener noreferrer" className="group relative text-stone hover:text-ember text-sm transition-colors">
+                Instagram
+                <span className="absolute bottom-0 left-0 w-0 h-px bg-ember group-hover:w-full transition-all duration-300" />
+              </Link>
             </div>
           </div>
 
-          {/* Pages */}
+          {/* Navigate */}
           <div>
             <h3 className="text-bone text-sm font-semibold mb-3 uppercase tracking-wider">Navigate</h3>
             <ul className="space-y-2">
@@ -76,21 +53,6 @@ export default function Footer() {
           <div>
             <h3 className="text-bone text-sm font-semibold mb-3 uppercase tracking-wider">Connect</h3>
             <ul className="space-y-2">
-              <li>
-                <Link href={LINKS.discord} target="_blank" rel="noopener noreferrer" className="text-stone hover:text-bone text-sm transition-colors">
-                  Join the Discord
-                </Link>
-              </li>
-              <li>
-                <Link href={LINKS.youtube} target="_blank" rel="noopener noreferrer" className="text-stone hover:text-bone text-sm transition-colors">
-                  Watch on YouTube
-                </Link>
-              </li>
-              <li>
-                <Link href={LINKS.patreon} target="_blank" rel="noopener noreferrer" className="text-stone hover:text-bone text-sm transition-colors">
-                  Support on Patreon
-                </Link>
-              </li>
               <li>
                 <Link href={LINKS.startplaying} target="_blank" rel="noopener noreferrer" className="text-stone hover:text-bone text-sm transition-colors">
                   Play in a Game

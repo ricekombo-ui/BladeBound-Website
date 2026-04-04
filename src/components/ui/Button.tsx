@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, MouseEvent } from "react";
 
 type Variant = "primary" | "secondary" | "ghost" | "outline";
 type Size = "sm" | "md" | "lg";
@@ -48,11 +50,18 @@ export default function Button({
     "inline-flex items-center justify-center gap-2 rounded transition-all duration-200 font-medium leading-none";
   const cls = `${base} ${variants[variant]} ${sizes[size]} ${disabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"} ${className}`;
 
+  const handleEmberBurst = (e: MouseEvent) => {
+    if ((variant === "primary" || variant === "secondary") && window.emberBurst) {
+      window.emberBurst(e.clientX, e.clientY, 20);
+    }
+  };
+
   if (href) {
     return (
       <Link
         href={href}
         className={cls}
+        onClick={handleEmberBurst}
         {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       >
         {children}
@@ -61,7 +70,7 @@ export default function Button({
   }
 
   return (
-    <button type={type} onClick={onClick} disabled={disabled} className={cls}>
+    <button type={type} onClick={(e) => { handleEmberBurst(e); onClick?.(); }} disabled={disabled} className={cls}>
       {children}
     </button>
   );

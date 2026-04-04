@@ -9,6 +9,7 @@ import Button from "@/components/ui/Button";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import VideoEmbed from "@/components/ui/VideoEmbed";
 import EmberDivider from "@/components/ui/EmberDivider";
+import EmberGlow from "@/components/ui/EmberGlow";
 import { LINKS } from "@/lib/constants";
 
 export const metadata: Metadata = {
@@ -106,7 +107,8 @@ export default function HomePage() {
       <EmberDivider />
 
       {/* Featured Series */}
-      <SectionWrapper id="featured-series">
+      <SectionWrapper id="featured-series" className="relative">
+        <EmberGlow />
         <ScrollReveal direction="up">
           <div className="mb-12">
             <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
@@ -192,7 +194,8 @@ export default function HomePage() {
       <EmberDivider />
 
       {/* Play CTA */}
-      <SectionWrapper id="play" tight>
+      <SectionWrapper id="play" tight className="relative">
+        <EmberGlow />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <ScrollReveal direction="left">
             <div>

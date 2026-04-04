@@ -104,7 +104,7 @@ export default function Hero() {
               <Button href={LINKS.discord} variant="secondary" size="lg" external>
                 Join the Discord
               </Button>
-              <Button href={LINKS.patreon} variant="secondary" size="lg" external>
+              <Button href={LINKS.patreon} variant="ghost" size="md" external>
                 Support on Patreon
               </Button>
             </div>
