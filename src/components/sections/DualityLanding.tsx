@@ -395,23 +395,24 @@ export default function DualityLanding() {
             {/* Result */}
             <AnimatePresence>
               {showResult && dominant && (
-                <motion.div
-                  className="dl-result"
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <p className="dl-result-eye">The verdict is cast</p>
-                  <h2 className={`dl-result-hl dl-hl-${dominant}`}>{copy[dominant].headline}</h2>
-                  <p className="dl-result-sub">{copy[dominant].sub}</p>
-                  <button
-                    className="dl-result-enter"
-                    onClick={skip}
-                    onMouseEnter={() => sound?.tick(0.08)}
+                <div className="dl-result">
+                  <motion.div
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
                   >
-                    Enter BladeBound →
-                  </button>
-                </motion.div>
+                    <p className="dl-result-eye">The verdict is cast</p>
+                    <h2 className={`dl-result-hl dl-hl-${dominant}`}>{copy[dominant].headline}</h2>
+                    <p className="dl-result-sub">{copy[dominant].sub}</p>
+                    <button
+                      className="dl-result-enter"
+                      onClick={skip}
+                      onMouseEnter={() => sound?.tick(0.08)}
+                    >
+                      Enter BladeBound →
+                    </button>
+                  </motion.div>
+                </div>
               )}
             </AnimatePresence>
           </div>
@@ -534,10 +535,11 @@ export default function DualityLanding() {
         .dl-dot-fear { background: #69354c; }
 
         .dl-result {
-          position: absolute;
+          position: fixed;
           top: 50%; left: 50%;
           transform: translate(-50%, -50%);
           text-align: center; width: max-content;
+          z-index: 10;
         }
         .dl-result-eye {
           font-family: 'Inter', system-ui, sans-serif;
