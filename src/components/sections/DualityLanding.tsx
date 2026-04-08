@@ -240,6 +240,7 @@ export default function DualityLanding() {
   const [diceFadeOut, setDiceFadeOut] = useState(false);
   const lastTickTime = useRef(0);
   const enteredRef = useRef(false);
+  const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Trigger entrance animation on mount
   useEffect(() => {
@@ -315,7 +316,7 @@ export default function DualityLanding() {
       setTimeout(() => sound?.winnerReveal(dom), 700);
       setTimeout(() => setDiceFadeOut(true), 1400);
       setTimeout(() => { setShowResult(true); setPhase("result"); }, 2100);
-      setTimeout(() => {
+      autoAdvanceTimer.current = setTimeout(() => {
         sound?.transition();
         sessionStorage.setItem("bb_entered", "true");
         sessionStorage.setItem("bb_result", dom);
@@ -327,6 +328,10 @@ export default function DualityLanding() {
 
   const skip = useCallback(() => {
     if (phase === "exit" || phase === "done") return;
+    if (autoAdvanceTimer.current) {
+      clearTimeout(autoAdvanceTimer.current);
+      autoAdvanceTimer.current = null;
+    }
     sound?.transition();
     sessionStorage.setItem("bb_entered", "true");
     setPhase("exit");
