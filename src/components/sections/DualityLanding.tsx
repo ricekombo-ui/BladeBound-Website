@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
+import { motion, useAnimationControls, AnimatePresence } from "framer-motion";
 
 function d12() {
   return Math.floor(Math.random() * 12) + 1;
@@ -27,7 +28,6 @@ class SoundEngine {
     return g;
   }
 
-  // Crisp click — hover / number tick
   tick(vol = 0.08) {
     try {
       const ctx = this.getCtx();
@@ -43,14 +43,11 @@ class SoundEngine {
     } catch {}
   }
 
-  // Button press — authoritative impact
   rollPress() {
     try {
       const ctx = this.getCtx();
       const g = this.master(ctx, 0.55);
       const now = ctx.currentTime;
-
-      // Low thud
       const osc1 = ctx.createOscillator();
       const env1 = ctx.createGain();
       osc1.type = "sine";
@@ -60,8 +57,6 @@ class SoundEngine {
       env1.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
       osc1.connect(env1); env1.connect(g);
       osc1.start(now); osc1.stop(now + 0.25);
-
-      // Mid crack
       const osc2 = ctx.createOscillator();
       const env2 = ctx.createGain();
       osc2.type = "sawtooth";
@@ -71,8 +66,6 @@ class SoundEngine {
       env2.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
       osc2.connect(env2); env2.connect(g);
       osc2.start(now); osc2.stop(now + 0.15);
-
-      // Noise burst
       const buf = ctx.createBuffer(1, ctx.sampleRate * 0.05, ctx.sampleRate);
       const data = buf.getChannelData(0);
       for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
@@ -86,7 +79,6 @@ class SoundEngine {
     } catch {}
   }
 
-  // Dice tumbling — rhythmic wooden rattles
   diceRattle(duration = 2700) {
     try {
       const ctx = this.getCtx();
@@ -95,11 +87,9 @@ class SoundEngine {
       for (let i = 0; i < count; i++) {
         const t = ctx.currentTime + (i * interval) / 1000;
         const vol = 0.18 * (1 - i / count) + 0.04;
-
         const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.025), ctx.sampleRate);
         const d = buf.getChannelData(0);
         for (let j = 0; j < d.length; j++) d[j] = (Math.random() * 2 - 1) * Math.exp(-j / 80);
-
         const src = ctx.createBufferSource();
         const f = ctx.createBiquadFilter();
         const g = ctx.createGain();
@@ -112,16 +102,12 @@ class SoundEngine {
     } catch {}
   }
 
-  // Die lands — solid weighted thud with resonance
   dieLand(type: "hope" | "fear") {
     try {
       const ctx = this.getCtx();
       const g = this.master(ctx, 0.6);
       const now = ctx.currentTime;
-
       const freq = type === "hope" ? 110 : 75;
-
-      // Body impact
       const osc = ctx.createOscillator();
       const env = ctx.createGain();
       osc.type = "sine";
@@ -131,8 +117,6 @@ class SoundEngine {
       env.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
       osc.connect(env); env.connect(g);
       osc.start(now); osc.stop(now + 0.4);
-
-      // Resonance tail
       const osc2 = ctx.createOscillator();
       const env2 = ctx.createGain();
       osc2.type = "sine";
@@ -141,8 +125,6 @@ class SoundEngine {
       env2.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
       osc2.connect(env2); env2.connect(g);
       osc2.start(now + 0.02); osc2.stop(now + 0.55);
-
-      // Crack transient
       const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.015), ctx.sampleRate);
       const d = buf.getChannelData(0);
       for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / 30);
@@ -156,15 +138,12 @@ class SoundEngine {
     } catch {}
   }
 
-  // Winner reveal — ascending authority tone (Hope: bright chime, Fear: dark toll)
   winnerReveal(type: "hope" | "fear") {
     try {
       const ctx = this.getCtx();
       const g = this.master(ctx, 0.5);
       const now = ctx.currentTime;
-
       if (type === "hope") {
-        // Bright ascending triad — D major feel
         const freqs = [293.66, 369.99, 440, 587.33];
         freqs.forEach((freq, i) => {
           const osc = ctx.createOscillator();
@@ -178,7 +157,6 @@ class SoundEngine {
           osc.connect(env); env.connect(g);
           osc.start(t); osc.stop(t + 1.3);
         });
-        // Shimmer overtone
         const shimmer = ctx.createOscillator();
         const senv = ctx.createGain();
         shimmer.type = "sine"; shimmer.frequency.value = 1174.66;
@@ -187,7 +165,6 @@ class SoundEngine {
         shimmer.connect(senv); senv.connect(g);
         shimmer.start(now + 0.2); shimmer.stop(now + 1.5);
       } else {
-        // Dark descending toll — minor feel
         const freqs = [220, 174.61, 146.83, 110];
         freqs.forEach((freq, i) => {
           const osc = ctx.createOscillator();
@@ -201,7 +178,6 @@ class SoundEngine {
           osc.connect(env); env.connect(g);
           osc.start(t); osc.stop(t + 2.0);
         });
-        // Low rumble sub
         const sub = ctx.createOscillator();
         const senv = ctx.createGain();
         sub.type = "sine"; sub.frequency.value = 55;
@@ -213,32 +189,26 @@ class SoundEngine {
     } catch {}
   }
 
-  // Page transition whoosh — cinematic sweep
   transition() {
     try {
       const ctx = this.getCtx();
       const g = this.master(ctx, 0.35);
       const now = ctx.currentTime;
-
       const buf = ctx.createBuffer(1, ctx.sampleRate * 1.2, ctx.sampleRate);
       const d = buf.getChannelData(0);
       for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
-
       const src = ctx.createBufferSource();
       src.buffer = buf;
-
       const f = ctx.createBiquadFilter();
       f.type = "bandpass";
       f.frequency.setValueAtTime(200, now);
       f.frequency.exponentialRampToValueAtTime(3000, now + 0.6);
       f.frequency.exponentialRampToValueAtTime(8000, now + 1.0);
       f.Q.value = 1.5;
-
       const env = ctx.createGain();
       env.gain.setValueAtTime(0.001, now);
       env.gain.linearRampToValueAtTime(0.8, now + 0.3);
       env.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
-
       src.connect(f); f.connect(env); env.connect(g);
       src.start(now); src.stop(now + 1.2);
     } catch {}
@@ -247,39 +217,302 @@ class SoundEngine {
 
 const sound = typeof window !== "undefined" ? new SoundEngine() : null;
 
-// ─── Component ──────────────────────────────────────────────────────────────
+// ─── 3D Die Component ───────────────────────────────────────────────────────
+// Pentagon clip-path for d12 face (flat-top orientation)
+const PENT_CLIP = "polygon(50% 0%, 97% 35%, 79% 95%, 21% 95%, 3% 35%)";
+
+interface Die3DProps {
+  color: "hope" | "fear";
+  value: string;
+  dieState: "idle" | "entering" | "rolling" | "land" | "winner" | "loser";
+  floatDelay?: number;
+}
+
+function Die3D({ color, value, dieState, floatDelay = 0 }: Die3DProps) {
+  const controls = useAnimationControls();
+  const isHope = color === "hope";
+
+  const palette = isHope
+    ? {
+        rimTop:    "#e8784a",
+        rimMid:    "#8B3A20",
+        rimDark:   "#3A1810",
+        faceTop:   "#7a2e14",
+        faceMid:   "#3d1608",
+        faceDeep:  "#1a0c06",
+        highlight: "rgba(240,160,100,0.18)",
+        numColor:  "#e8784a",
+        glow:      "rgba(213,96,71,0.9)",
+        glowSoft:  "rgba(213,96,71,0.35)",
+        shadow:    "rgba(213,96,71,0.4)",
+      }
+    : {
+        rimTop:    "#8b6bb5",
+        rimMid:    "#3A1830",
+        rimDark:   "#150A18",
+        faceTop:   "#3a1f5a",
+        faceMid:   "#1e0e30",
+        faceDeep:  "#100818",
+        highlight: "rgba(140,100,200,0.15)",
+        numColor:  "#a87fd4",
+        glow:      "rgba(105,53,76,0.95)",
+        glowSoft:  "rgba(68,56,89,0.4)",
+        shadow:    "rgba(105,53,76,0.45)",
+      };
+
+  useEffect(() => {
+    if (dieState === "idle") {
+      controls.start({
+        rotateX: [-18, -14, -18],
+        rotateY: [22, 28, 22],
+        rotateZ: [-2, 1, -2],
+        y: [0, -10, 0],
+        scale: 1,
+        opacity: 1,
+        filter: `drop-shadow(0 12px 32px ${palette.shadow}) drop-shadow(0 0 0px transparent)`,
+        transition: {
+          duration: 4 + floatDelay * 0.5,
+          repeat: Infinity,
+          repeatType: "mirror",
+          ease: "easeInOut",
+          delay: floatDelay,
+        },
+      });
+    } else if (dieState === "entering") {
+      controls.start({
+        rotateX: [120, -30, -10, -18],
+        rotateY: [-40, 50, 15, 22],
+        rotateZ: [15, -8, 3, -2],
+        y: [-180, 20, -8, 0],
+        scale: [0.2, 1.12, 0.95, 1],
+        opacity: [0, 1, 1, 1],
+        filter: [
+          "drop-shadow(0 0 0px transparent)",
+          `drop-shadow(0 20px 40px ${palette.shadow})`,
+          `drop-shadow(0 14px 34px ${palette.shadow})`,
+          `drop-shadow(0 12px 32px ${palette.shadow})`,
+        ],
+        transition: {
+          duration: 0.85,
+          times: [0, 0.55, 0.8, 1],
+          ease: [0.22, 1, 0.36, 1],
+          delay: floatDelay * 0.15,
+        },
+      });
+    } else if (dieState === "rolling") {
+      // Cinematic zoom-tumble matching reference video
+      controls.start({
+        rotateX: [
+          -18, -80, 60, -140, 30, -200, 80, -260, 20, -300, 10, -330, -18,
+        ],
+        rotateY: [
+          22, 120, 260, 380, 500, 600, 700, 780, 840, 890, 920, 940, 22,
+        ],
+        rotateZ: [
+          -2, 12, -18, 8, -14, 6, -10, 4, -6, 2, -3, 1, -2,
+        ],
+        scale: [1, 1.35, 1.65, 1.55, 1.45, 1.35, 1.2, 1.1, 1.05, 1.02, 1.01, 1, 1],
+        y: [0, -45, -70, -55, -40, -28, -18, -10, -5, -2, -1, 0, 0],
+        filter: [
+          `drop-shadow(0 12px 32px ${palette.shadow})`,
+          `drop-shadow(0 24px 60px ${palette.shadow}) drop-shadow(0 0 30px ${palette.glowSoft})`,
+          `drop-shadow(0 28px 70px ${palette.shadow}) drop-shadow(0 0 40px ${palette.glowSoft})`,
+          `drop-shadow(0 24px 60px ${palette.shadow}) drop-shadow(0 0 35px ${palette.glowSoft})`,
+          `drop-shadow(0 20px 50px ${palette.shadow}) drop-shadow(0 0 28px ${palette.glowSoft})`,
+          `drop-shadow(0 18px 44px ${palette.shadow}) drop-shadow(0 0 22px ${palette.glowSoft})`,
+          `drop-shadow(0 16px 38px ${palette.shadow})`,
+          `drop-shadow(0 14px 34px ${palette.shadow})`,
+          `drop-shadow(0 13px 33px ${palette.shadow})`,
+          `drop-shadow(0 12px 32px ${palette.shadow})`,
+          `drop-shadow(0 12px 32px ${palette.shadow})`,
+          `drop-shadow(0 12px 32px ${palette.shadow})`,
+          `drop-shadow(0 12px 32px ${palette.shadow})`,
+        ],
+        transition: {
+          duration: 2.75,
+          times: [0, 0.08, 0.18, 0.28, 0.38, 0.48, 0.58, 0.68, 0.78, 0.86, 0.92, 0.96, 1],
+          ease: "easeInOut",
+        },
+      });
+    } else if (dieState === "land") {
+      controls.start({
+        scale: [1.06, 0.94, 1.03, 0.99, 1],
+        y: [0, 8, -4, 2, 0],
+        rotateX: -18,
+        rotateY: 22,
+        rotateZ: -2,
+        filter: `drop-shadow(0 12px 32px ${palette.shadow})`,
+        transition: {
+          duration: 0.5,
+          times: [0, 0.3, 0.55, 0.78, 1],
+          ease: "easeOut",
+        },
+      });
+    } else if (dieState === "winner") {
+      controls.start({
+        scale: 1.08,
+        rotateX: -18,
+        rotateY: 22,
+        rotateZ: -2,
+        y: 0,
+        filter: [
+          `drop-shadow(0 12px 32px ${palette.shadow})`,
+          `drop-shadow(0 0 28px ${palette.glow}) drop-shadow(0 0 55px ${palette.glowSoft}) drop-shadow(0 12px 32px ${palette.shadow})`,
+        ],
+        transition: {
+          duration: 0.8,
+          ease: [0.22, 1, 0.36, 1],
+          filter: { duration: 0.8, repeat: Infinity, repeatType: "mirror" as const },
+        },
+      });
+    } else if (dieState === "loser") {
+      controls.start({
+        scale: 0.88,
+        opacity: 0.22,
+        rotateX: -18,
+        rotateY: 22,
+        rotateZ: -2,
+        y: 0,
+        filter: "drop-shadow(0 4px 10px rgba(0,0,0,0.4))",
+        transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+      });
+    }
+  }, [dieState]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <div style={{ perspective: "700px", display: "inline-flex" }}>
+      <motion.div
+        animate={controls}
+        initial={{ opacity: 0, scale: 0.2, rotateX: 120, rotateY: -40 }}
+        style={{
+          transformStyle: "preserve-3d",
+          transformOrigin: "center center",
+          position: "relative",
+          width: "clamp(110px, 14vw, 148px)",
+          height: "clamp(110px, 14vw, 148px)",
+          willChange: "transform",
+        }}
+      >
+        {/* ── Outer rim / bevel ── */}
+        <div
+          style={{
+            position: "absolute",
+            inset: "-5px",
+            clipPath: PENT_CLIP,
+            background: `linear-gradient(145deg, ${palette.rimTop} 0%, ${palette.rimMid} 35%, ${palette.rimDark} 55%, ${palette.rimMid} 75%, ${palette.rimTop} 100%)`,
+            filter: "blur(0.5px)",
+          }}
+        />
+
+        {/* ── Top-left face (lighter — simulates lit top face) ── */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            clipPath: PENT_CLIP,
+            background: `linear-gradient(160deg, ${palette.faceTop} 0%, ${palette.faceMid} 55%, ${palette.faceDeep} 100%)`,
+            transform: "translateZ(1px)",
+          }}
+        />
+
+        {/* ── Main front face ── */}
+        <div
+          style={{
+            position: "absolute",
+            inset: "5px",
+            clipPath: PENT_CLIP,
+            background: `radial-gradient(ellipse at 38% 32%, ${palette.faceMid} 0%, ${palette.faceDeep} 70%)`,
+            transform: "translateZ(2px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {/* Specular highlight — top-left shine */}
+          <div
+            style={{
+              position: "absolute",
+              top: "8%",
+              left: "12%",
+              width: "45%",
+              height: "38%",
+              background: `radial-gradient(ellipse at 30% 30%, ${palette.highlight} 0%, transparent 70%)`,
+              clipPath: PENT_CLIP,
+              pointerEvents: "none",
+            }}
+          />
+          {/* Number */}
+          <span
+            style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: "clamp(1.9rem, 3.5vw, 2.7rem)",
+              fontWeight: 700,
+              lineHeight: 1,
+              color: palette.numColor,
+              textShadow: `0 0 18px ${palette.glow}, 0 0 36px ${palette.glowSoft}, 0 2px 6px rgba(0,0,0,0.9)`,
+              userSelect: "none",
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
+            {value}
+          </span>
+        </div>
+
+        {/* ── Edge highlight strip (top edge) ── */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            clipPath: PENT_CLIP,
+            background: `linear-gradient(170deg, ${palette.rimTop}55 0%, transparent 20%)`,
+            transform: "translateZ(3px)",
+            pointerEvents: "none",
+          }}
+        />
+      </motion.div>
+    </div>
+  );
+}
+
+// ─── Main Component ──────────────────────────────────────────────────────────
 export default function DualityLanding() {
-  // Skip if already entered this session
   const [skipped] = useState(() => {
     if (typeof window === "undefined") return false;
     return sessionStorage.getItem("bb_entered") === "true";
   });
 
-  const [phase, setPhase] = useState<"idle" | "rolling" | "settling" | "result" | "exit" | "done">(() => skipped ? "done" : "idle");
+  const [phase, setPhase] = useState<"idle" | "rolling" | "settling" | "result" | "exit" | "done">(
+    () => (skipped ? "done" : "idle")
+  );
   const [hopeVal, setHopeVal] = useState("?");
   const [fearVal, setFearVal] = useState("?");
   const [dominant, setDominant] = useState<"hope" | "fear" | null>(null);
-  const [dieHopeState, setDieHopeState] = useState<"idle" | "rolling" | "land" | "winner" | "loser">("idle");
-  const [dieFearState, setDieFearState] = useState<"idle" | "rolling" | "land" | "winner" | "loser">("idle");
+  const [dieHopeState, setDieHopeState] = useState<"idle" | "entering" | "rolling" | "land" | "winner" | "loser">("entering");
+  const [dieFearState, setDieFearState] = useState<"idle" | "entering" | "rolling" | "land" | "winner" | "loser">("entering");
   const [showScores, setShowScores] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [diceFadeOut, setDiceFadeOut] = useState(false);
   const lastTickTime = useRef(0);
+  const enteredRef = useRef(false);
 
-  const hopeDieRef = useRef<HTMLDivElement>(null);
-  const fearDieRef = useRef<HTMLDivElement>(null);
-
-  const handleTilt = useCallback((e: React.MouseEvent<HTMLDivElement>, ref: React.RefObject<HTMLDivElement | null>) => {
-    if (phase !== "idle" || !ref.current) return;
-    const r = ref.current.getBoundingClientRect();
-    const dx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2);
-    const dy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
-    ref.current.style.transform = `perspective(400px) rotateY(${dx * 10}deg) rotateX(${-dy * 10}deg)`;
-  }, [phase]);
-
-  const handleTiltLeave = useCallback((ref: React.RefObject<HTMLDivElement | null>) => {
-    if (ref.current) ref.current.style.transform = "";
-  }, []);
+  // Trigger entrance animation on mount
+  useEffect(() => {
+    if (skipped || enteredRef.current) return;
+    enteredRef.current = true;
+    // Hope die enters first, Fear die 150ms later
+    setTimeout(() => {
+      setDieHopeState("entering");
+      setTimeout(() => {
+        setDieFearState("entering");
+        // After entrance completes, switch both to idle float
+        setTimeout(() => {
+          setDieHopeState("idle");
+          setDieFearState("idle");
+        }, 1000);
+      }, 150);
+    }, 800); // Wait for wordmark to animate in first
+  }, [skipped]);
 
   const cycleNumbers = useCallback((
     setVal: (v: string) => void,
@@ -293,7 +526,6 @@ export default function DualityLanding() {
       const progress = Math.min(elapsed / totalMs, 1);
       if (progress >= 1) { setVal(String(finalVal)); onDone?.(); return; }
       setVal(String(d12()));
-      // Tick sound — throttled to avoid audio spam
       const now = performance.now();
       if (now - lastTickTime.current > 80) {
         sound?.tick(0.04 + (1 - progress) * 0.04);
@@ -319,11 +551,9 @@ export default function DualityLanding() {
     setDieFearState("rolling");
     sound?.diceRattle(ROLL);
 
-    // Hope lands slightly earlier
     cycleNumbers(setHopeVal, hVal, ROLL - 100, () => {
       setDieHopeState("land");
       sound?.dieLand("hope");
-      // Smooth: land → settle → winner/loser
       setTimeout(() => setDieHopeState(dom === "hope" ? "winner" : "loser"), 500);
     });
 
@@ -337,17 +567,9 @@ export default function DualityLanding() {
       setPhase("settling");
       setDominant(dom);
       setShowScores(true);
-
-      // Winner sound after both dice have settled
       setTimeout(() => sound?.winnerReveal(dom), 700);
-
-      // Dice gently dissolve
       setTimeout(() => setDiceFadeOut(true), 1400);
-
-      // Result fades in after dice are gone
       setTimeout(() => { setShowResult(true); setPhase("result"); }, 2100);
-
-      // Auto-advance after 5s with fade
       setTimeout(() => {
         sound?.transition();
         sessionStorage.setItem("bb_entered", "true");
@@ -368,21 +590,6 @@ export default function DualityLanding() {
 
   if (phase === "done") return null;
 
-  // Derive class names
-  const hopeClass = [
-    dieHopeState === "rolling" ? "dl-rolling-hope" : "",
-    dieHopeState === "land" ? "dl-land" : "",
-    dieHopeState === "winner" ? "dl-winner-hope" : "",
-    dieHopeState === "loser" ? "dl-loser" : "",
-  ].filter(Boolean).join(" ");
-
-  const fearClass = [
-    dieFearState === "rolling" ? "dl-rolling-fear" : "",
-    dieFearState === "land" ? "dl-land" : "",
-    dieFearState === "winner" ? "dl-winner-fear" : "",
-    dieFearState === "loser" ? "dl-loser" : "",
-  ].filter(Boolean).join(" ");
-
   return (
     <>
       <div className={`dl-wrap ${phase === "exit" ? "dl-exit" : ""}`}>
@@ -399,21 +606,14 @@ export default function DualityLanding() {
 
           {/* Dice stage */}
           <div className="dl-dice-stage">
-            <div className={`dl-dice-arena ${diceFadeOut ? "dl-dice-fade" : ""}`}>
+            <motion.div
+              className="dl-dice-arena"
+              animate={diceFadeOut ? { opacity: 0, scale: 0.88, y: -10 } : { opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            >
               {/* Hope */}
               <div className="dl-die-col">
-                <div
-                  ref={hopeDieRef}
-                  className={`dl-die dl-die-hope ${hopeClass}`}
-                  onMouseMove={(e) => handleTilt(e, hopeDieRef)}
-                  onMouseLeave={() => handleTiltLeave(hopeDieRef)}
-                  onMouseEnter={() => phase === "idle" && sound?.tick(0.06)}
-                >
-                  <div className="dl-die-rim dl-rim-hope" />
-                  <div className="dl-die-face dl-face-hope">
-                    <span className="dl-die-num dl-num-hope">{hopeVal}</span>
-                  </div>
-                </div>
+                <Die3D color="hope" value={hopeVal} dieState={dieHopeState} floatDelay={0} />
                 <span className="dl-die-label dl-lbl-hope">Hope</span>
               </div>
 
@@ -426,53 +626,66 @@ export default function DualityLanding() {
 
               {/* Fear */}
               <div className="dl-die-col">
-                <div
-                  ref={fearDieRef}
-                  className={`dl-die dl-die-fear ${fearClass}`}
-                  onMouseMove={(e) => handleTilt(e, fearDieRef)}
-                  onMouseLeave={() => handleTiltLeave(fearDieRef)}
-                  onMouseEnter={() => phase === "idle" && sound?.tick(0.06)}
-                >
-                  <div className="dl-die-rim dl-rim-fear" />
-                  <div className="dl-die-face dl-face-fear">
-                    <span className="dl-die-num dl-num-fear">{fearVal}</span>
-                  </div>
-                </div>
+                <Die3D color="fear" value={fearVal} dieState={dieFearState} floatDelay={0.4} />
                 <span className="dl-die-label dl-lbl-fear">Fear</span>
               </div>
-            </div>
+            </motion.div>
 
             {/* Score tally */}
-            {showScores && !diceFadeOut && (
-              <div className="dl-scores">
-                <span className="dl-score"><span className="dl-dot dl-dot-hope" />Hope <strong>{hopeVal}</strong></span>
-                <span className="dl-score"><span className="dl-dot dl-dot-fear" />Fear <strong>{fearVal}</strong></span>
-              </div>
-            )}
+            <AnimatePresence>
+              {showScores && !diceFadeOut && (
+                <motion.div
+                  className="dl-scores"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <span className="dl-score"><span className="dl-dot dl-dot-hope" />Hope <strong>{hopeVal}</strong></span>
+                  <span className="dl-score"><span className="dl-dot dl-dot-fear" />Fear <strong>{fearVal}</strong></span>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/* Result */}
-            {showResult && dominant && (
-              <div className="dl-result">
-                <p className="dl-result-eye">The verdict is cast</p>
-                <h2 className={`dl-result-hl dl-hl-${dominant}`}>{copy[dominant].headline}</h2>
-                <p className="dl-result-sub">{copy[dominant].sub}</p>
-                <button
-                  className="dl-result-enter"
-                  onClick={skip}
-                  onMouseEnter={() => sound?.tick(0.08)}
+            <AnimatePresence>
+              {showResult && dominant && (
+                <motion.div
+                  className="dl-result"
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  Enter BladeBound →
-                </button>
-              </div>
-            )}
+                  <p className="dl-result-eye">The verdict is cast</p>
+                  <h2 className={`dl-result-hl dl-hl-${dominant}`}>{copy[dominant].headline}</h2>
+                  <p className="dl-result-sub">{copy[dominant].sub}</p>
+                  <button
+                    className="dl-result-enter"
+                    onClick={skip}
+                    onMouseEnter={() => sound?.tick(0.08)}
+                  >
+                    Enter BladeBound →
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Roll CTA */}
-          {phase === "idle" && (
-            <button className="dl-btn-roll" onClick={performRoll}>
-              Roll Duality
-            </button>
-          )}
+          <AnimatePresence>
+            {phase === "idle" && (
+              <motion.button
+                className="dl-btn-roll"
+                onClick={performRoll}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.7, delay: 0.2 }}
+              >
+                Roll Duality
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
 
         {(phase === "idle" || phase === "rolling" || phase === "settling") && (
@@ -541,86 +754,33 @@ export default function DualityLanding() {
           animation: dl-up 0.9s 0.8s cubic-bezier(0.22,1,0.36,1) forwards;
         }
 
-        /* Dice stage */
         .dl-dice-stage {
           position: relative; display: flex; flex-direction: column;
-          align-items: center; min-height: 240px; margin-bottom: 3rem;
+          align-items: center; min-height: 260px; margin-bottom: 3rem;
           opacity: 0; animation: dl-up 0.9s 1s cubic-bezier(0.22,1,0.36,1) forwards;
         }
         .dl-dice-arena {
           display: flex; align-items: center;
           gap: clamp(2rem, 5vw, 4.5rem);
-          transition: opacity 1s cubic-bezier(0.22,1,0.36,1), transform 1s cubic-bezier(0.22,1,0.36,1);
         }
-        .dl-dice-fade { opacity: 0; transform: scale(0.88) translateY(-8px); pointer-events: none; }
 
         .dl-die-col { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
-
-        /* Die shape */
-        .dl-die {
-          position: relative;
-          width: clamp(100px, 13vw, 140px); height: clamp(100px, 13vw, 140px);
-          will-change: transform; cursor: default;
-          /* Smooth transition for winner/loser state changes */
-          transition: filter 0.8s cubic-bezier(0.22,1,0.36,1), opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.22,1,0.36,1);
-        }
-        .dl-die-rim {
-          position: absolute; inset: 0;
-          clip-path: polygon(50% 0%,75% 6.7%,93.3% 25%,100% 50%,93.3% 75%,75% 93.3%,50% 100%,25% 93.3%,6.7% 75%,0% 50%,6.7% 25%,25% 6.7%);
-          transform: scale(1.04); transform-origin: center;
-        }
-        .dl-die-face {
-          position: absolute; inset: 0;
-          clip-path: polygon(50% 0%,75% 6.7%,93.3% 25%,100% 50%,93.3% 75%,75% 93.3%,50% 100%,25% 93.3%,6.7% 75%,0% 50%,6.7% 25%,25% 6.7%);
-          display: flex; align-items: center; justify-content: center;
-        }
-        .dl-die-num {
-          font-family: 'Playfair Display', Georgia, serif;
-          font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-          font-weight: 600; line-height: 1;
-          user-select: none; position: relative; z-index: 1;
-        }
-
-        /* Hope colors */
-        .dl-rim-hope { background: linear-gradient(140deg,#d56047 0%,#8B3A20 40%,#3A1810 55%,#ae4641 80%,#d56047 100%); }
-        .dl-face-hope { background: linear-gradient(150deg,#1a0c06 0%,#0e0804 55%,#070402 100%); box-shadow: inset 0 2px 4px rgba(213,96,71,0.15), inset 0 -2px 4px rgba(0,0,0,0.6); }
-        .dl-num-hope { color: #d56047; text-shadow: 0 0 14px rgba(213,96,71,0.6),0 0 30px rgba(213,96,71,0.2),0 2px 4px rgba(0,0,0,0.9); }
-        .dl-lbl-hope { color: rgba(213,96,71,0.5); }
-
-        /* Fear colors */
-        .dl-rim-fear { background: linear-gradient(140deg,#69354c 0%,#3A1830 40%,#150A18 55%,#443859 80%,#69354c 100%); }
-        .dl-face-fear { background: linear-gradient(150deg,#100818 0%,#080610 55%,#040408 100%); box-shadow: inset 0 2px 4px rgba(105,53,76,0.2), inset 0 -2px 4px rgba(0,0,0,0.7); }
-        .dl-num-fear { color: #9B7DB8; text-shadow: 0 0 14px rgba(105,53,76,0.7),0 0 30px rgba(68,56,89,0.3),0 2px 4px rgba(0,0,0,0.9); }
-        .dl-lbl-fear { color: rgba(105,53,76,0.6); }
 
         .dl-die-label {
           font-family: 'Inter', system-ui, sans-serif;
           font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase;
-          transition: color 0.8s ease-out;
         }
+        .dl-lbl-hope { color: rgba(213,96,71,0.5); }
+        .dl-lbl-fear { color: rgba(105,53,76,0.6); }
 
-        /* Winner / loser — CSS transitions, not sudden jumps */
-        .dl-die-hope.dl-winner-hope {
-          filter: drop-shadow(0 0 18px rgba(213,96,71,0.85)) drop-shadow(0 0 40px rgba(213,96,71,0.3));
-          transform: scale(1.04);
-        }
-        .dl-die-fear.dl-winner-fear {
-          filter: drop-shadow(0 0 18px rgba(105,53,76,0.9)) drop-shadow(0 0 40px rgba(68,56,89,0.35));
-          transform: scale(1.04);
-        }
-        .dl-loser { opacity: 0.22 !important; transform: scale(0.91) !important; filter: none; }
-
-        /* VS divider */
         .dl-vs { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; opacity: 0.25; }
         .dl-vs-line { width: 1px; height: 40px; background: linear-gradient(to bottom,transparent,#fdf2e1,transparent); }
         .dl-vs-text { font-family: 'Inter', system-ui, sans-serif; font-size: 0.5rem; letter-spacing: 0.2em; text-transform: uppercase; color: #79717b; }
 
-        /* Scores */
         .dl-scores {
           display: flex; gap: 2rem; margin-top: 1.2rem;
           font-family: 'Inter', system-ui, sans-serif;
           font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: #79717b;
-          animation: dl-fade 0.6s ease-out forwards;
         }
         .dl-score { display: flex; align-items: center; gap: 0.5rem; }
         .dl-score strong { color: #fdf2e1; font-weight: 500; font-size: 0.85rem; }
@@ -628,11 +788,9 @@ export default function DualityLanding() {
         .dl-dot-hope { background: #d56047; }
         .dl-dot-fear { background: #69354c; }
 
-        /* Result */
         .dl-result {
           position: absolute; top: 0; left: 50%; transform: translateX(-50%);
           text-align: center; width: max-content;
-          animation: dl-result-in 1.2s cubic-bezier(0.22,1,0.36,1) forwards;
         }
         .dl-result-eye {
           font-family: 'Inter', system-ui, sans-serif;
@@ -661,7 +819,6 @@ export default function DualityLanding() {
         .dl-result-enter:hover { border-color: rgba(213,96,71,0.7); background: rgba(213,96,71,0.08); }
         .dl-result-enter:active { transform: scale(0.97); }
 
-        /* Roll button */
         .dl-btn-roll {
           font-family: 'Inter', system-ui, sans-serif;
           font-size: 0.7rem; font-weight: 600;
@@ -671,8 +828,6 @@ export default function DualityLanding() {
           padding: 1rem 3.5rem; cursor: pointer;
           position: relative; overflow: hidden; outline: none;
           transition: border-color 200ms, letter-spacing 200ms, transform 100ms;
-          opacity: 0;
-          animation: dl-up 0.9s 1.2s cubic-bezier(0.22,1,0.36,1) forwards;
         }
         .dl-btn-roll::before {
           content: ''; position: absolute; inset: 0;
@@ -690,7 +845,6 @@ export default function DualityLanding() {
         .dl-btn-roll:hover::after { width: 70%; }
         .dl-btn-roll:active { transform: scale(0.97); }
 
-        /* Skip */
         .dl-skip {
           position: fixed; bottom: 2rem; right: 2.5rem; z-index: 500;
           font-family: 'Inter', system-ui, sans-serif;
@@ -703,42 +857,6 @@ export default function DualityLanding() {
         }
         .dl-skip:hover { color: rgba(253,242,225,0.7); border-color: rgba(253,242,225,0.3); }
 
-        /* Roll animations */
-        @keyframes dl-rollHope {
-          0%   { transform: perspective(500px) rotateX(0) rotateY(0) scale(1); }
-          12%  { transform: perspective(500px) rotateX(-28deg) rotateY(22deg) scale(0.88) translateY(-14px); }
-          26%  { transform: perspective(500px) rotateX(42deg) rotateY(-36deg) scale(0.84) translateY(-18px); }
-          40%  { transform: perspective(500px) rotateX(-35deg) rotateY(28deg) scale(0.87) translateY(-12px); }
-          55%  { transform: perspective(500px) rotateX(20deg) rotateY(-44deg) scale(0.90) translateY(-8px); }
-          68%  { transform: perspective(500px) rotateX(-14deg) rotateY(18deg) scale(0.94) translateY(-4px); }
-          80%  { transform: perspective(500px) rotateX(8deg) rotateY(-8deg) scale(0.97) translateY(-2px); }
-          90%  { transform: perspective(500px) rotateX(-3deg) rotateY(3deg) scale(1.02) translateY(1px); }
-          100% { transform: perspective(500px) rotateX(0) rotateY(0) scale(1) translateY(0); }
-        }
-        @keyframes dl-rollFear {
-          0%   { transform: perspective(500px) rotateX(0) rotateY(0) scale(1); }
-          12%  { transform: perspective(500px) rotateX(24deg) rotateY(-20deg) scale(0.89) translateY(-16px); }
-          26%  { transform: perspective(500px) rotateX(-44deg) rotateY(32deg) scale(0.83) translateY(-20px); }
-          40%  { transform: perspective(500px) rotateX(32deg) rotateY(-48deg) scale(0.86) translateY(-14px); }
-          55%  { transform: perspective(500px) rotateX(-22deg) rotateY(38deg) scale(0.91) translateY(-8px); }
-          68%  { transform: perspective(500px) rotateX(14deg) rotateY(-16deg) scale(0.95) translateY(-4px); }
-          80%  { transform: perspective(500px) rotateX(-6deg) rotateY(7deg) scale(0.98) translateY(-1px); }
-          90%  { transform: perspective(500px) rotateX(3deg) rotateY(-3deg) scale(1.025) translateY(2px); }
-          100% { transform: perspective(500px) rotateX(0) rotateY(0) scale(1) translateY(0); }
-        }
-        @keyframes dl-landBounce {
-          0%   { transform: scale(1); }
-          30%  { transform: scale(1.06); }
-          55%  { transform: scale(0.975); }
-          75%  { transform: scale(1.02); }
-          100% { transform: scale(1); }
-        }
-
-        .dl-rolling-hope { animation: dl-rollHope 2.7s cubic-bezier(0.16,1,0.3,1) forwards; }
-        .dl-rolling-fear { animation: dl-rollFear 2.8s cubic-bezier(0.16,1,0.3,1) forwards; }
-        .dl-land { animation: dl-landBounce 0.45s ease-out forwards; }
-
-        /* Shared keyframes */
         @keyframes dl-up {
           from { opacity: 0; transform: translateY(16px); }
           to   { opacity: 1; transform: translateY(0); }
@@ -746,17 +864,11 @@ export default function DualityLanding() {
         @keyframes dl-fade {
           from { opacity: 0; } to { opacity: 1; }
         }
-        @keyframes dl-result-in {
-          0%   { opacity: 0; transform: translateX(-50%) translateY(20px); }
-          100% { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
 
         @media (prefers-reduced-motion: reduce) {
           *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.3ms !important; }
         }
         @media (max-width: 640px) {
-          .dl-die { width: 96px !important; height: 96px !important; }
-          .dl-die-num { font-size: 1.7rem !important; }
           .dl-skip { bottom: 1.4rem; right: 1.4rem; }
         }
       `}</style>
