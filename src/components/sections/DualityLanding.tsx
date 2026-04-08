@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { motion, useAnimationControls, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import D12Canvas, { DieState } from "@/components/ui/D12Canvas";
 
 function d12() {
   return Math.floor(Math.random() * 12) + 1;
@@ -217,263 +218,7 @@ class SoundEngine {
 
 const sound = typeof window !== "undefined" ? new SoundEngine() : null;
 
-// ─── 3D Die Component ───────────────────────────────────────────────────────
-// Pentagon clip-path for d12 face (flat-top orientation)
-const PENT_CLIP = "polygon(50% 0%, 97% 35%, 79% 95%, 21% 95%, 3% 35%)";
-
-interface Die3DProps {
-  color: "hope" | "fear";
-  value: string;
-  dieState: "idle" | "entering" | "rolling" | "land" | "winner" | "loser";
-  floatDelay?: number;
-}
-
-function Die3D({ color, value, dieState, floatDelay = 0 }: Die3DProps) {
-  const controls = useAnimationControls();
-  const isHope = color === "hope";
-
-  const palette = isHope
-    ? {
-        rimTop:    "#e8784a",
-        rimMid:    "#8B3A20",
-        rimDark:   "#3A1810",
-        faceTop:   "#7a2e14",
-        faceMid:   "#3d1608",
-        faceDeep:  "#1a0c06",
-        highlight: "rgba(240,160,100,0.18)",
-        numColor:  "#e8784a",
-        glow:      "rgba(213,96,71,0.9)",
-        glowSoft:  "rgba(213,96,71,0.35)",
-        shadow:    "rgba(213,96,71,0.4)",
-      }
-    : {
-        rimTop:    "#8b6bb5",
-        rimMid:    "#3A1830",
-        rimDark:   "#150A18",
-        faceTop:   "#3a1f5a",
-        faceMid:   "#1e0e30",
-        faceDeep:  "#100818",
-        highlight: "rgba(140,100,200,0.15)",
-        numColor:  "#a87fd4",
-        glow:      "rgba(105,53,76,0.95)",
-        glowSoft:  "rgba(68,56,89,0.4)",
-        shadow:    "rgba(105,53,76,0.45)",
-      };
-
-  useEffect(() => {
-    if (dieState === "idle") {
-      controls.start({
-        rotateX: [-18, -14, -18],
-        rotateY: [22, 28, 22],
-        rotateZ: [-2, 1, -2],
-        y: [0, -10, 0],
-        scale: 1,
-        opacity: 1,
-        filter: `drop-shadow(0 12px 32px ${palette.shadow}) drop-shadow(0 0 0px transparent)`,
-        transition: {
-          duration: 4 + floatDelay * 0.5,
-          repeat: Infinity,
-          repeatType: "mirror",
-          ease: "easeInOut",
-          delay: floatDelay,
-        },
-      });
-    } else if (dieState === "entering") {
-      controls.start({
-        rotateX: [120, -30, -10, -18],
-        rotateY: [-40, 50, 15, 22],
-        rotateZ: [15, -8, 3, -2],
-        y: [-180, 20, -8, 0],
-        scale: [0.2, 1.12, 0.95, 1],
-        opacity: [0, 1, 1, 1],
-        filter: [
-          "drop-shadow(0 0 0px transparent)",
-          `drop-shadow(0 20px 40px ${palette.shadow})`,
-          `drop-shadow(0 14px 34px ${palette.shadow})`,
-          `drop-shadow(0 12px 32px ${palette.shadow})`,
-        ],
-        transition: {
-          duration: 0.85,
-          times: [0, 0.55, 0.8, 1],
-          ease: [0.22, 1, 0.36, 1],
-          delay: floatDelay * 0.15,
-        },
-      });
-    } else if (dieState === "rolling") {
-      // Cinematic zoom-tumble matching reference video
-      controls.start({
-        rotateX: [
-          -18, -80, 60, -140, 30, -200, 80, -260, 20, -300, 10, -330, -18,
-        ],
-        rotateY: [
-          22, 120, 260, 380, 500, 600, 700, 780, 840, 890, 920, 940, 22,
-        ],
-        rotateZ: [
-          -2, 12, -18, 8, -14, 6, -10, 4, -6, 2, -3, 1, -2,
-        ],
-        scale: [1, 1.35, 1.65, 1.55, 1.45, 1.35, 1.2, 1.1, 1.05, 1.02, 1.01, 1, 1],
-        y: [0, -45, -70, -55, -40, -28, -18, -10, -5, -2, -1, 0, 0],
-        filter: [
-          `drop-shadow(0 12px 32px ${palette.shadow})`,
-          `drop-shadow(0 24px 60px ${palette.shadow}) drop-shadow(0 0 30px ${palette.glowSoft})`,
-          `drop-shadow(0 28px 70px ${palette.shadow}) drop-shadow(0 0 40px ${palette.glowSoft})`,
-          `drop-shadow(0 24px 60px ${palette.shadow}) drop-shadow(0 0 35px ${palette.glowSoft})`,
-          `drop-shadow(0 20px 50px ${palette.shadow}) drop-shadow(0 0 28px ${palette.glowSoft})`,
-          `drop-shadow(0 18px 44px ${palette.shadow}) drop-shadow(0 0 22px ${palette.glowSoft})`,
-          `drop-shadow(0 16px 38px ${palette.shadow})`,
-          `drop-shadow(0 14px 34px ${palette.shadow})`,
-          `drop-shadow(0 13px 33px ${palette.shadow})`,
-          `drop-shadow(0 12px 32px ${palette.shadow})`,
-          `drop-shadow(0 12px 32px ${palette.shadow})`,
-          `drop-shadow(0 12px 32px ${palette.shadow})`,
-          `drop-shadow(0 12px 32px ${palette.shadow})`,
-        ],
-        transition: {
-          duration: 2.75,
-          times: [0, 0.08, 0.18, 0.28, 0.38, 0.48, 0.58, 0.68, 0.78, 0.86, 0.92, 0.96, 1],
-          ease: "easeInOut",
-        },
-      });
-    } else if (dieState === "land") {
-      controls.start({
-        scale: [1.06, 0.94, 1.03, 0.99, 1],
-        y: [0, 8, -4, 2, 0],
-        rotateX: -18,
-        rotateY: 22,
-        rotateZ: -2,
-        filter: `drop-shadow(0 12px 32px ${palette.shadow})`,
-        transition: {
-          duration: 0.5,
-          times: [0, 0.3, 0.55, 0.78, 1],
-          ease: "easeOut",
-        },
-      });
-    } else if (dieState === "winner") {
-      controls.start({
-        scale: 1.08,
-        rotateX: -18,
-        rotateY: 22,
-        rotateZ: -2,
-        y: 0,
-        filter: [
-          `drop-shadow(0 12px 32px ${palette.shadow})`,
-          `drop-shadow(0 0 28px ${palette.glow}) drop-shadow(0 0 55px ${palette.glowSoft}) drop-shadow(0 12px 32px ${palette.shadow})`,
-        ],
-        transition: {
-          duration: 0.8,
-          ease: [0.22, 1, 0.36, 1],
-          filter: { duration: 0.8, repeat: Infinity, repeatType: "mirror" as const },
-        },
-      });
-    } else if (dieState === "loser") {
-      controls.start({
-        scale: 0.88,
-        opacity: 0.22,
-        rotateX: -18,
-        rotateY: 22,
-        rotateZ: -2,
-        y: 0,
-        filter: "drop-shadow(0 4px 10px rgba(0,0,0,0.4))",
-        transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
-      });
-    }
-  }, [dieState]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  return (
-    <div style={{ perspective: "700px", display: "inline-flex" }}>
-      <motion.div
-        animate={controls}
-        initial={{ opacity: 0, scale: 0.2, rotateX: 120, rotateY: -40 }}
-        style={{
-          transformStyle: "preserve-3d",
-          transformOrigin: "center center",
-          position: "relative",
-          width: "clamp(110px, 14vw, 148px)",
-          height: "clamp(110px, 14vw, 148px)",
-          willChange: "transform",
-        }}
-      >
-        {/* ── Outer rim / bevel ── */}
-        <div
-          style={{
-            position: "absolute",
-            inset: "-5px",
-            clipPath: PENT_CLIP,
-            background: `linear-gradient(145deg, ${palette.rimTop} 0%, ${palette.rimMid} 35%, ${palette.rimDark} 55%, ${palette.rimMid} 75%, ${palette.rimTop} 100%)`,
-            filter: "blur(0.5px)",
-          }}
-        />
-
-        {/* ── Top-left face (lighter — simulates lit top face) ── */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            clipPath: PENT_CLIP,
-            background: `linear-gradient(160deg, ${palette.faceTop} 0%, ${palette.faceMid} 55%, ${palette.faceDeep} 100%)`,
-            transform: "translateZ(1px)",
-          }}
-        />
-
-        {/* ── Main front face ── */}
-        <div
-          style={{
-            position: "absolute",
-            inset: "5px",
-            clipPath: PENT_CLIP,
-            background: `radial-gradient(ellipse at 38% 32%, ${palette.faceMid} 0%, ${palette.faceDeep} 70%)`,
-            transform: "translateZ(2px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {/* Specular highlight — top-left shine */}
-          <div
-            style={{
-              position: "absolute",
-              top: "8%",
-              left: "12%",
-              width: "45%",
-              height: "38%",
-              background: `radial-gradient(ellipse at 30% 30%, ${palette.highlight} 0%, transparent 70%)`,
-              clipPath: PENT_CLIP,
-              pointerEvents: "none",
-            }}
-          />
-          {/* Number */}
-          <span
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              fontSize: "clamp(1.9rem, 3.5vw, 2.7rem)",
-              fontWeight: 700,
-              lineHeight: 1,
-              color: palette.numColor,
-              textShadow: `0 0 18px ${palette.glow}, 0 0 36px ${palette.glowSoft}, 0 2px 6px rgba(0,0,0,0.9)`,
-              userSelect: "none",
-              position: "relative",
-              zIndex: 1,
-            }}
-          >
-            {value}
-          </span>
-        </div>
-
-        {/* ── Edge highlight strip (top edge) ── */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            clipPath: PENT_CLIP,
-            background: `linear-gradient(170deg, ${palette.rimTop}55 0%, transparent 20%)`,
-            transform: "translateZ(3px)",
-            pointerEvents: "none",
-          }}
-        />
-      </motion.div>
-    </div>
-  );
-}
+// ─── Component ──────────────────────────────────────────────────────────────
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 export default function DualityLanding() {
@@ -488,8 +233,8 @@ export default function DualityLanding() {
   const [hopeVal, setHopeVal] = useState("?");
   const [fearVal, setFearVal] = useState("?");
   const [dominant, setDominant] = useState<"hope" | "fear" | null>(null);
-  const [dieHopeState, setDieHopeState] = useState<"idle" | "entering" | "rolling" | "land" | "winner" | "loser">("entering");
-  const [dieFearState, setDieFearState] = useState<"idle" | "entering" | "rolling" | "land" | "winner" | "loser">("entering");
+  const [dieHopeState, setDieHopeState] = useState<DieState>("entering");
+  const [dieFearState, setDieFearState] = useState<DieState>("entering");
   const [showScores, setShowScores] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [diceFadeOut, setDiceFadeOut] = useState(false);
@@ -613,7 +358,7 @@ export default function DualityLanding() {
             >
               {/* Hope */}
               <div className="dl-die-col">
-                <Die3D color="hope" value={hopeVal} dieState={dieHopeState} floatDelay={0} />
+                <D12Canvas color="hope" value={hopeVal} dieState={dieHopeState} floatDelay={0} />
                 <span className="dl-die-label dl-lbl-hope">Hope</span>
               </div>
 
@@ -626,7 +371,7 @@ export default function DualityLanding() {
 
               {/* Fear */}
               <div className="dl-die-col">
-                <Die3D color="fear" value={fearVal} dieState={dieFearState} floatDelay={0.4} />
+                <D12Canvas color="fear" value={fearVal} dieState={dieFearState} floatDelay={0.4} />
                 <span className="dl-die-label dl-lbl-fear">Fear</span>
               </div>
             </motion.div>
@@ -789,7 +534,9 @@ export default function DualityLanding() {
         .dl-dot-fear { background: #69354c; }
 
         .dl-result {
-          position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+          position: absolute;
+          top: 50%; left: 50%;
+          transform: translate(-50%, -50%);
           text-align: center; width: max-content;
         }
         .dl-result-eye {
