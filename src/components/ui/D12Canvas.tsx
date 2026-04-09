@@ -84,18 +84,18 @@ export default function D12Canvas({ color, value, dieState, floatDelay = 0 }: D1
 
   // Palette: [r,g,b] arrays for face lerp, strings for glow/num
   const pal = isHope ? {
-    dark:    [55, 20,  8],
-    mid:     [120, 50, 22],
-    bright:  [190, 90, 48],
+    dark:    [90, 38, 14],    // lifted so low-lit faces stay visible
+    mid:     [148, 65, 28],
+    bright:  [210, 100, 52],
     rimR: 220, rimG: 105, rimB: 62,
     num:     "#e8784a",
     glow:    "rgba(213,96,71,0.9)",
     glowS:   "rgba(213,96,71,0.4)",
     shadow:  "rgba(180,60,30,0.5)",
   } : {
-    dark:    [18, 10, 32],
-    mid:     [55, 32, 90],
-    bright:  [100, 65, 155],
+    dark:    [45, 28, 72],    // lifted so low-lit faces stay visible
+    mid:     [70, 45, 115],
+    bright:  [115, 78, 175],
     rimR: 130, rimG: 85, rimB: 200,
     num:     "#b090e0",
     glow:    "rgba(120,70,180,0.9)",
@@ -171,9 +171,9 @@ export default function D12Canvas({ color, value, dieState, floatDelay = 0 }: D1
         if (dot(n, ctr) < 0) n = [-n[0],-n[1],-n[2]];
         return {
           face, pts,
-          visible:    n[2] > 0.02,
+          visible:    n[2] > 0,          // include edge-on faces (no gap at silhouette)
           depth:      ctr[2],
-          brightness: Math.max(0.1, dot(n, LIGHT)), // diffuse
+          brightness: Math.max(0.32, dot(n, LIGHT)), // floor ensures no face goes fully black
           center:     ctr,
         };
       });
