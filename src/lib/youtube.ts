@@ -8,6 +8,7 @@ const YT = "https://www.googleapis.com/youtube/v3";
 
 export const CHANNEL_ID = "UCFGSz8DsBZFF5TWCQEmELUQ";
 export const SAGE_TOUCHED_PLAYLIST = "PLoQqS6kdYti3BOL9CHTpTH8i3zowr4Zlt";
+export const SHORTS_PLAYLIST = "PLoQqS6kdYti0oVPC5MSaztU80cgrZiLuK";
 
 // Static fallbacks used when no API key is configured
 export const FALLBACK_FEATURED: VideoItem[] = [
@@ -16,10 +17,9 @@ export const FALLBACK_FEATURED: VideoItem[] = [
   { id: "LHoghRxzSf4", title: "Campaign Frame Gauntlet: Age of Umbra" },
 ];
 
-export const FALLBACK_SHORTS: [VideoItem, VideoItem, VideoItem] = [
+export const FALLBACK_SHORTS: VideoItem[] = [
   { id: "bC3wJqDQg8k", title: "GM Tip: Player Engagement" },
   { id: "JAO7da2RpV4", title: "The Golden Trio" },
-  { id: "bC3wJqDQg8k", title: "GM Tip: Player Engagement" },
 ];
 
 async function ytFetch(path: string, params: Record<string, string>) {
@@ -100,26 +100,35 @@ export async function getFeaturedVideos(): Promise<VideoItem[]> {
   }
 }
 
-export async function getShortsVideos(): Promise<[VideoItem, VideoItem, VideoItem]> {
+// Returns all shorts from the shorts playlist, ordered:
+// [0] most viewed, [1] most recent, [2] random (≠ 0 and ≠ 1), then the rest in playlist order
+export async function getShortsFromPlaylist(): Promise<VideoItem[]> {
   if (!API_KEY) return FALLBACK_SHORTS;
   try {
-    const uploadsId = await getUploadsPlaylistId(CHANNEL_ID);
-    const uploads = await getPlaylistVideoDetails(uploadsId, 50);
-    const shorts = uploads.filter((v) => v.duration <= 60);
+    const all = await getPlaylistVideoDetails(SHORTS_PLAYLIST, 50);
+    if (all.length === 0) return FALLBACK_SHORTS;
 
-    if (shorts.length === 0) return FALLBACK_SHORTS;
+    // Most viewed
+    const mostViewed = [...all].sort((a, b) => b.views - a.views)[0];
 
-    const mostViewed = [...shorts].sort((a, b) => b.views - a.views)[0];
-    const mostRecent = shorts[0];
-    const pool = shorts.filter((v) => v.id !== mostViewed.id && v.id !== mostRecent.id);
+    // Most recent (first in playlist, which is ordered newest first)
+    const mostRecent = all[0];
+
+    // Random — must differ from both
+    const pool = all.filter((v) => v.id !== mostViewed.id && v.id !== mostRecent.id);
     const random = pool.length > 0
       ? pool[Math.floor(Math.random() * pool.length)]
-      : shorts[Math.min(2, shorts.length - 1)];
+      : all.find((v) => v.id !== mostViewed.id) ?? all[0];
+
+    // Remaining (everything not already in the top 3)
+    const topIds = new Set([mostViewed.id, mostRecent.id, random.id]);
+    const rest = all.filter((v) => !topIds.has(v.id));
 
     return [
       { id: mostViewed.id, title: mostViewed.title },
       { id: mostRecent.id, title: mostRecent.title },
       { id: random.id, title: random.title },
+      ...rest.map((v) => ({ id: v.id, title: v.title })),
     ];
   } catch {
     return FALLBACK_SHORTS;

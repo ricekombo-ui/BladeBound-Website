@@ -11,7 +11,7 @@ import ShortsWheel from "@/components/ui/ShortsWheel";
 import EmberDivider from "@/components/ui/EmberDivider";
 import EmberGlow from "@/components/ui/EmberGlow";
 import { LINKS } from "@/lib/constants";
-import { getFeaturedVideos, getShortsVideos } from "@/lib/youtube";
+import { getFeaturedVideos, getShortsFromPlaylist } from "@/lib/youtube";
 
 export const metadata: Metadata = {
   title: "BladeBound | Narrative-First Daggerheart Content",
@@ -56,7 +56,7 @@ const whatWeOffer = [
 export default async function HomePage() {
   const [featuredVideos, shorts] = await Promise.all([
     getFeaturedVideos(),
-    getShortsVideos(),
+    getShortsFromPlaylist(),
   ]);
 
   return (
@@ -138,10 +138,7 @@ export default async function HomePage() {
             </p>
           </div>
         </ScrollReveal>
-        <ShortsWheel
-          shorts={shorts}
-          labels={["Most Viewed Short", "Most Recent Short", "Worth Watching"]}
-        />
+        <ShortsWheel shorts={shorts} />
       </SectionWrapper>
 
       <EmberDivider />
