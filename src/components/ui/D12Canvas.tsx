@@ -72,13 +72,17 @@ interface D12CanvasProps {
 }
 
 export default function D12Canvas({ color, value, dieState, floatDelay = 0 }: D12CanvasProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const rotRef    = useRef({ x: 0.3, y: 0.5, z: 0.1 });
-  const velRef    = useRef({ x: 0.002, y: 0.006, z: 0.001 });
-  const rafRef    = useRef<number>(0);
-  const stateRef  = useRef<DieState>(dieState);
-  const rollT0    = useRef(0);
-  const controls  = useAnimationControls();
+  const canvasRef  = useRef<HTMLCanvasElement>(null);
+  const rotRef     = useRef({ x: 0.3, y: 0.5, z: 0.1 });
+  const velRef     = useRef({ x: 0.002, y: 0.006, z: 0.001 });
+  const rafRef     = useRef<number>(0);
+  const stateRef   = useRef<DieState>(dieState);
+  const rollT0     = useRef(0);
+  const valueRef   = useRef(value);   // tracks live value inside the rAF closure
+  const controls   = useAnimationControls();
+
+  // Keep valueRef current on every render
+  useEffect(() => { valueRef.current = value; }, [value]);
 
   const isHope = color === "hope";
 
@@ -171,9 +175,9 @@ export default function D12Canvas({ color, value, dieState, floatDelay = 0 }: D1
         if (dot(n, ctr) < 0) n = [-n[0],-n[1],-n[2]];
         return {
           face, pts,
-          visible:    n[2] > 0,          // include edge-on faces (no gap at silhouette)
+          visible:    n[2] > 0,
           depth:      ctr[2],
-          brightness: Math.max(0.32, dot(n, LIGHT)), // floor ensures no face goes fully black
+          brightness: Math.max(0.48, dot(n, LIGHT)), // high floor — no face ever goes dark
           center:     ctr,
         };
       });
@@ -247,9 +251,9 @@ export default function D12Canvas({ color, value, dieState, floatDelay = 0 }: D1
         ctx.shadowColor   = pal.glow;
         ctx.shadowBlur    = SZ * 0.07;
         ctx.fillStyle     = pal.num;
-        ctx.fillText(value, cx, cy);
+        ctx.fillText(valueRef.current, cx, cy);
         ctx.shadowBlur = SZ * 0.04;
-        ctx.fillText(value, cx, cy); // second pass for intensity
+        ctx.fillText(valueRef.current, cx, cy); // second pass for intensity
         ctx.restore();
       }
 
