@@ -2,15 +2,16 @@ import type { Metadata } from "next";
 import Hero from "@/components/sections/Hero";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import FeatureCards from "@/components/sections/FeatureCards";
-import SeriesCard from "@/components/sections/SeriesCard";
 import ProofSection from "@/components/sections/ProofSection";
 import CTABlock from "@/components/ui/CTABlock";
 import Button from "@/components/ui/Button";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import VideoEmbed from "@/components/ui/VideoEmbed";
+import ShortsWheel from "@/components/ui/ShortsWheel";
 import EmberDivider from "@/components/ui/EmberDivider";
 import EmberGlow from "@/components/ui/EmberGlow";
 import { LINKS } from "@/lib/constants";
+import { getFeaturedVideos, getShortsVideos } from "@/lib/youtube";
 
 export const metadata: Metadata = {
   title: "BladeBound | Narrative-First Daggerheart Content",
@@ -51,37 +52,13 @@ const whatWeOffer = [
   },
 ];
 
-const featuredSeries = [
-  {
-    label: "Series",
-    title: "Sage Touched",
-    description:
-      "A Daggerheart discussion and breakdown series covering classes, campaign frames, mechanics, and design. The entry point for anyone new to the game.",
-    href: "https://www.youtube.com/playlist?list=PLoQqS6kdYti3BOL9CHTpTH8i3zowr4Zlt",
-    external: true,
-    accent: "#d56047",
-  },
-  {
-    label: "Actual Play",
-    title: "Campaign Frame Gauntlet",
-    description:
-      "Official Daggerheart campaign frames, showcased through focused one-shots. See how each frame plays at a real table before you choose your next adventure.",
-    href: "https://www.youtube.com/playlist?list=PLoQqS6kdYti2tuf2pw5nsnV5rtrcBgGQ6",
-    external: true,
-    accent: "#ae4641",
-  },
-  {
-    label: "Education",
-    title: "GM Tips",
-    description:
-      "Short and mid-form content on narrative habits, pacing, player engagement, and running better Daggerheart sessions. Practical and direct.",
-    href: LINKS.youtube,
-    external: true,
-    accent: "#69354c",
-  },
-];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [featuredVideos, shorts] = await Promise.all([
+    getFeaturedVideos(),
+    getShortsVideos(),
+  ]);
+
   return (
     <>
       <Hero />
@@ -106,7 +83,7 @@ export default function HomePage() {
 
       <EmberDivider />
 
-      {/* Featured Series */}
+      {/* Featured Content */}
       <SectionWrapper id="featured-series" className="relative">
         <EmberGlow />
         <ScrollReveal direction="up">
@@ -118,14 +95,22 @@ export default function HomePage() {
               Content Worth Watching
             </h2>
             <p className="text-stone text-base md:text-lg max-w-xl">
-              Three series. Each one serves a different purpose. All of them are worth your time.
+              Most viewed, most recent, and a hidden gem — pulled fresh from the channel.
             </p>
           </div>
         </ScrollReveal>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featuredSeries.map((series, i) => (
-            <SeriesCard key={series.title} {...series} index={i} />
-          ))}
+          {featuredVideos.map((video, i) => {
+            const label = i === 0 ? "Most Viewed · Sage Touched" : i === 1 ? "Most Recent" : "Worth Watching";
+            return (
+              <ScrollReveal key={`${video.id}-${i}`} delay={i * 150} direction="up">
+                <div>
+                  <VideoEmbed videoId={video.id} title={video.title} />
+                  <p className="mt-2 text-ember text-[10px] font-semibold uppercase tracking-widest">{label}</p>
+                </div>
+              </ScrollReveal>
+            );
+          })}
         </div>
         <ScrollReveal delay={500} direction="up">
           <div className="mt-8 text-center">
@@ -138,7 +123,7 @@ export default function HomePage() {
 
       <EmberDivider />
 
-      {/* Video Showcase - Onboarding + Authority */}
+      {/* Watch Before You Decide — Shorts Wheel */}
       <SectionWrapper id="watch">
         <ScrollReveal direction="up">
           <div className="mb-12 text-center">
@@ -149,46 +134,14 @@ export default function HomePage() {
               Watch Before You Decide
             </h2>
             <p className="text-stone text-base md:text-lg max-w-xl mx-auto">
-              Get a feel for what BladeBound content looks like. From system breakdowns to full sessions at the table.
+              Quick hits from the channel. Swipe to explore.
             </p>
           </div>
         </ScrollReveal>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <ScrollReveal delay={0} direction="left">
-            <VideoEmbed
-              videoId="https://youtu.be/zxPCnBOg_-8"
-              title="Sage Touched: The Motherboard — Daggerheart Breakdown"
-            />
-          </ScrollReveal>
-          <ScrollReveal delay={150} direction="right">
-            <VideoEmbed
-              videoId="https://youtu.be/aGegKuhWblQ"
-              title="Sage Touched: The Seraph — Daggerheart Class Deep Dive"
-            />
-          </ScrollReveal>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <ScrollReveal delay={0} direction="up">
-            <VideoEmbed
-              videoId="https://youtu.be/LHoghRxzSf4"
-              title="Campaign Frame Gauntlet: Age of Umbra"
-            />
-          </ScrollReveal>
-          <ScrollReveal delay={150} direction="up">
-            <VideoEmbed
-              videoId="https://youtube.com/shorts/bC3wJqDQg8k"
-              title="GM Tip: Player Engagement"
-              isShort
-            />
-          </ScrollReveal>
-          <ScrollReveal delay={300} direction="up">
-            <VideoEmbed
-              videoId="https://youtube.com/shorts/JAO7da2RpV4"
-              title="The Golden Trio"
-              isShort
-            />
-          </ScrollReveal>
-        </div>
+        <ShortsWheel
+          shorts={shorts}
+          labels={["Most Viewed Short", "Most Recent Short", "Worth Watching"]}
+        />
       </SectionWrapper>
 
       <EmberDivider />
