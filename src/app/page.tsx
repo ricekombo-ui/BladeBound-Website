@@ -6,7 +6,6 @@ import ProofSection from "@/components/sections/ProofSection";
 import CTABlock from "@/components/ui/CTABlock";
 import Button from "@/components/ui/Button";
 import ScrollReveal from "@/components/ui/ScrollReveal";
-import VideoEmbed from "@/components/ui/VideoEmbed";
 import ShortsWheel from "@/components/ui/ShortsWheel";
 import EmberDivider from "@/components/ui/EmberDivider";
 import EmberGlow from "@/components/ui/EmberGlow";
@@ -61,7 +60,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero />
+      <Hero featuredVideos={featuredVideos} />
 
       {/* What BladeBound Offers */}
       <SectionWrapper id="what-we-offer">
@@ -79,46 +78,6 @@ export default async function HomePage() {
           </div>
         </ScrollReveal>
         <FeatureCards features={whatWeOffer} columns={3} />
-      </SectionWrapper>
-
-      <EmberDivider />
-
-      {/* Featured Content */}
-      <SectionWrapper id="featured-series" className="relative">
-        <EmberGlow />
-        <ScrollReveal direction="up">
-          <div className="mb-12">
-            <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
-              Featured Content
-            </span>
-            <h2 className="font-serif text-3xl md:text-4xl text-bone mb-3">
-              Content Worth Watching
-            </h2>
-            <p className="text-stone text-base md:text-lg max-w-xl">
-              Most viewed, most recent, and a hidden gem — pulled fresh from the channel.
-            </p>
-          </div>
-        </ScrollReveal>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featuredVideos.map((video, i) => {
-            const label = i === 0 ? "Most Viewed · Sage Touched" : i === 1 ? "Most Recent" : "Worth Watching";
-            return (
-              <ScrollReveal key={`${video.id}-${i}`} delay={i * 150} direction="up">
-                <div>
-                  <VideoEmbed videoId={video.id} title={video.title} />
-                  <p className="mt-2 text-ember text-[10px] font-semibold uppercase tracking-widest">{label}</p>
-                </div>
-              </ScrollReveal>
-            );
-          })}
-        </div>
-        <ScrollReveal delay={500} direction="up">
-          <div className="mt-8 text-center">
-            <Button href={LINKS.youtube} variant="secondary" external>
-              Browse All Content on YouTube
-            </Button>
-          </div>
-        </ScrollReveal>
       </SectionWrapper>
 
       <EmberDivider />

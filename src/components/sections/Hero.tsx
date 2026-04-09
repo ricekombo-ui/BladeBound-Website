@@ -5,25 +5,25 @@ import Button from "@/components/ui/Button";
 import VideoEmbed from "@/components/ui/VideoEmbed";
 import { LINKS } from "@/lib/constants";
 
-const featuredContent = [
-  {
-    videoId: "https://youtu.be/zxPCnBOg_-8",
-    title: "Sage Touched: The Motherboard",
-    label: "Series",
-  },
-  {
-    videoId: "https://youtu.be/aGegKuhWblQ",
-    title: "Sage Touched: The Seraph",
-    label: "Class Breakdown",
-  },
-  {
-    videoId: "https://youtu.be/LHoghRxzSf4",
-    title: "Gauntlet: Age of Umbra",
-    label: "Actual Play",
-  },
+interface FeaturedVideo {
+  id: string;
+  title: string;
+}
+
+const FEATURED_LABELS = [
+  "Most Viewed · Sage Touched",
+  "Most Recent",
+  "Worth Watching",
 ];
 
-export default function Hero() {
+const FALLBACK_VIDEOS: FeaturedVideo[] = [
+  { id: "zxPCnBOg_-8", title: "Sage Touched: The Motherboard" },
+  { id: "aGegKuhWblQ", title: "Sage Touched: The Seraph" },
+  { id: "LHoghRxzSf4", title: "Gauntlet: Age of Umbra" },
+];
+
+export default function Hero({ featuredVideos }: { featuredVideos?: FeaturedVideo[] }) {
+  const videos = featuredVideos ?? FALLBACK_VIDEOS;
   const [entered, setEntered] = useState(false);
 
   useEffect(() => {
@@ -156,16 +156,19 @@ export default function Hero() {
             Featured Content
           </span>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {featuredContent.map((item, i) => (
+            {videos.map((item, i) => (
               <div
-                key={item.title}
+                key={item.id}
                 style={{
                   opacity: entered ? 1 : 0,
                   transform: entered ? "none" : "translateY(20px)",
                   transition: `all 0.8s cubic-bezier(0.22, 1, 0.36, 1) ${900 + i * 150}ms`,
                 }}
               >
-                <VideoEmbed videoId={item.videoId} title={item.title} />
+                <VideoEmbed videoId={item.id} title={item.title} />
+                <p className="mt-2 text-ember/70 text-[10px] font-semibold uppercase tracking-widest">
+                  {FEATURED_LABELS[i] ?? ""}
+                </p>
               </div>
             ))}
           </div>

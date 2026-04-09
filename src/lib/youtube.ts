@@ -10,7 +10,6 @@ export const CHANNEL_ID = "UCFGSz8DsBZFF5TWCQEmELUQ";
 export const SAGE_TOUCHED_PLAYLIST = "PLoQqS6kdYti3BOL9CHTpTH8i3zowr4Zlt";
 export const SHORTS_PLAYLIST = "PLoQqS6kdYti0oVPC5MSaztU80cgrZiLuK";
 
-// Static fallbacks used when no API key is configured
 export const FALLBACK_FEATURED: VideoItem[] = [
   { id: "zxPCnBOg_-8", title: "Sage Touched: The Motherboard — Daggerheart Breakdown" },
   { id: "aGegKuhWblQ", title: "Sage Touched: The Seraph — Daggerheart Class Deep Dive" },
@@ -38,40 +37,64 @@ function parseIsoDuration(iso: string): number {
   return parseInt(m[1] || "0") * 3600 + parseInt(m[2] || "0") * 60 + parseInt(m[3] || "0");
 }
 
+interface VideoDetail {
+  id: string;
+  title: string;
+  duration: number;
+  views: number;
+  publishedAt: string;
+}
+
 async function getUploadsPlaylistId(channelId: string): Promise<string> {
   const data = await ytFetch("channels", { part: "contentDetails", id: channelId });
   return data.items[0].contentDetails.relatedPlaylists.uploads as string;
 }
 
+// Returns videos in playlist order (uploads playlist = newest first).
+// Re-maps video details back onto the original playlist order so [0] is always newest.
 async function getPlaylistVideoDetails(
   playlistId: string,
   maxResults = 50
-): Promise<{ id: string; title: string; duration: number; views: number }[]> {
+): Promise<VideoDetail[]> {
   const items = await ytFetch("playlistItems", {
     part: "contentDetails",
     playlistId,
     maxResults: String(maxResults),
   });
-  const ids = (items.items as { contentDetails: { videoId: string } }[])
-    .map((i) => i.contentDetails.videoId)
-    .join(",");
+
+  const orderedIds: string[] = (
+    items.items as { contentDetails: { videoId: string } }[]
+  ).map((i) => i.contentDetails.videoId);
+
+  if (orderedIds.length === 0) return [];
 
   const details = await ytFetch("videos", {
     part: "snippet,statistics,contentDetails",
-    id: ids,
+    id: orderedIds.join(","),
   });
 
-  return (details.items as {
+  type RawVideo = {
     id: string;
-    snippet: { title: string };
+    snippet: { title: string; publishedAt: string };
     statistics: { viewCount?: string };
     contentDetails: { duration: string };
-  }[]).map((v) => ({
-    id: v.id,
-    title: v.snippet.title,
-    duration: parseIsoDuration(v.contentDetails.duration),
-    views: parseInt(v.statistics.viewCount || "0"),
-  }));
+  };
+
+  const detailMap = new Map<string, RawVideo>(
+    (details.items as RawVideo[]).map((v) => [v.id, v])
+  );
+
+  // Restore playlist order — critical for "most recent" to be correct
+  return orderedIds
+    .map((id) => detailMap.get(id))
+    .filter((v): v is RawVideo => v != null)
+    .map((v) => ({
+      id: v.id,
+      title: v.snippet.title,
+      duration: parseIsoDuration(v.contentDetails.duration),
+      views: parseInt(v.statistics.viewCount || "0"),
+      publishedAt: v.snippet.publishedAt,
+    }));
 }
 
 export async function getFeaturedVideos(): Promise<VideoItem[]> {
@@ -81,14 +104,23 @@ export async function getFeaturedVideos(): Promise<VideoItem[]> {
     const playlistVideos = await getPlaylistVideoDetails(SAGE_TOUCHED_PLAYLIST);
     const mostViewed = [...playlistVideos].sort((a, b) => b.views - a.views)[0];
 
-    // 2 & 3. Most recent + random from channel uploads (non-shorts only)
+    // 2. Most recent from channel (long-form only, sorted by publishedAt desc)
     const uploadsId = await getUploadsPlaylistId(CHANNEL_ID);
     const uploads = await getPlaylistVideoDetails(uploadsId, 50);
-    const longForm = uploads.filter((v) => v.duration > 60);
+    const longForm = uploads
+      .filter((v) => v.duration > 60)
+      .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1)); // newest first
 
     const mostRecent = longForm[0];
-    const pool = longForm.filter((v) => v.id !== mostRecent?.id);
-    const random = pool[Math.floor(Math.random() * pool.length)] || longForm[1];
+
+    // 3. Random long-form — different from most viewed and most recent
+    const pool = longForm.filter(
+      (v) => v.id !== mostViewed?.id && v.id !== mostRecent?.id
+    );
+    const random =
+      pool.length > 0
+        ? pool[Math.floor(Math.random() * pool.length)]
+        : longForm.find((v) => v.id !== mostRecent?.id) ?? longForm[1];
 
     return [
       mostViewed ? { id: mostViewed.id, title: mostViewed.title } : FALLBACK_FEATURED[0],
@@ -100,8 +132,8 @@ export async function getFeaturedVideos(): Promise<VideoItem[]> {
   }
 }
 
-// Returns all shorts from the shorts playlist, ordered:
-// [0] most viewed, [1] most recent, [2] random (≠ 0 and ≠ 1), then the rest in playlist order
+// Returns all shorts from the dedicated shorts playlist, ordered:
+// [0] most viewed  [1] most recent (by publishedAt)  [2] random (≠ 0 and ≠ 1)  [3+] rest
 export async function getShortsFromPlaylist(): Promise<VideoItem[]> {
   if (!API_KEY) return FALLBACK_SHORTS;
   try {
@@ -109,18 +141,30 @@ export async function getShortsFromPlaylist(): Promise<VideoItem[]> {
     if (all.length === 0) return FALLBACK_SHORTS;
 
     // Most viewed
-    const mostViewed = [...all].sort((a, b) => b.views - a.views)[0];
+    const byViews = [...all].sort((a, b) => b.views - a.views);
+    const mostViewed = byViews[0];
 
-    // Most recent (first in playlist, which is ordered newest first)
-    const mostRecent = all[0];
+    // Most recent by publish date
+    const byDate = [...all].sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
+    const mostRecent = byDate[0];
 
     // Random — must differ from both
-    const pool = all.filter((v) => v.id !== mostViewed.id && v.id !== mostRecent.id);
-    const random = pool.length > 0
-      ? pool[Math.floor(Math.random() * pool.length)]
-      : all.find((v) => v.id !== mostViewed.id) ?? all[0];
+    const pool = all.filter(
+      (v) => v.id !== mostViewed.id && v.id !== mostRecent.id
+    );
 
-    // Remaining (everything not already in the top 3)
+    let random: VideoDetail;
+    if (pool.length > 0) {
+      random = pool[Math.floor(Math.random() * pool.length)];
+    } else if (all.length >= 3) {
+      // If all[0] and all[1] are the top 2, pick all[2]
+      random = all.find((v) => v.id !== mostViewed.id && v.id !== mostRecent.id) ?? byViews[1];
+    } else {
+      // Only 1 or 2 unique videos — use a duplicate as last resort
+      random = all[all.length - 1];
+    }
+
+    // Remaining shorts (not already in top 3 positions)
     const topIds = new Set([mostViewed.id, mostRecent.id, random.id]);
     const rest = all.filter((v) => !topIds.has(v.id));
 
