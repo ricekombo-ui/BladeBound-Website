@@ -103,14 +103,14 @@ export async function getFeaturedVideos(): Promise<VideoItem[]> {
     // 1. Most viewed from Sage Touched playlist (long-form only, no shorts)
     const playlistVideos = await getPlaylistVideoDetails(SAGE_TOUCHED_PLAYLIST);
     const mostViewed = [...playlistVideos]
-      .filter((v) => v.duration > 60)
+      .filter((v) => v.duration > 180)
       .sort((a, b) => b.views - a.views)[0];
 
     // 2. Most recent from channel (long-form only, sorted by publishedAt desc)
     const uploadsId = await getUploadsPlaylistId(CHANNEL_ID);
     const uploads = await getPlaylistVideoDetails(uploadsId, 50);
     const longForm = uploads
-      .filter((v) => v.duration > 60)
+      .filter((v) => v.duration > 180)
       .sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1)); // newest first
 
     const mostRecent = longForm[0];
@@ -149,7 +149,7 @@ export async function getShortsFromPlaylist(): Promise<VideoItem[]> {
     ]);
 
     // Channel shorts = uploads with duration ≤ 60s
-    const channelShorts = uploads.filter((v) => v.duration <= 60);
+    const channelShorts = uploads.filter((v) => v.duration <= 180);
 
     // Merge: playlist first (preferred), then channel shorts as supplement (no dupes)
     const seenIds = new Set<string>(playlistVideos.map((v) => v.id));
