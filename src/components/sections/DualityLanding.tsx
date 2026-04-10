@@ -218,18 +218,11 @@ class SoundEngine {
 
 const sound = typeof window !== "undefined" ? new SoundEngine() : null;
 
-// ─── Component ──────────────────────────────────────────────────────────────
-
 // ─── Main Component ──────────────────────────────────────────────────────────
 export default function DualityLanding() {
-  const [skipped] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return sessionStorage.getItem("bb_entered") === "true";
-  });
-
-  const [phase, setPhase] = useState<"idle" | "rolling" | "settling" | "result" | "exit" | "done">(
-    () => (skipped ? "done" : "idle")
-  );
+  // Start hidden to avoid SSR/hydration mismatch.
+  // useEffect reveals the splash only for first-time visitors.
+  const [phase, setPhase] = useState<"idle" | "rolling" | "settling" | "result" | "exit" | "done">("done");
   const [hopeVal, setHopeVal] = useState("?");
   const [fearVal, setFearVal] = useState("?");
   const [dominant, setDominant] = useState<"hope" | "fear" | null>(null);
@@ -242,23 +235,28 @@ export default function DualityLanding() {
   const enteredRef = useRef(false);
   const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Trigger entrance animation on mount
+  // On mount: reveal splash only for new visitors (no sessionStorage on server)
   useEffect(() => {
-    if (skipped || enteredRef.current) return;
+    if (sessionStorage.getItem("bb_entered") !== "true") {
+      setPhase("idle");
+    }
+  }, []);
+
+  // Trigger entrance animation when splash becomes visible
+  useEffect(() => {
+    if (phase !== "idle" || enteredRef.current) return;
     enteredRef.current = true;
-    // Hope die enters first, Fear die 150ms later
     setTimeout(() => {
       setDieHopeState("entering");
       setTimeout(() => {
         setDieFearState("entering");
-        // After entrance completes, switch both to idle float
         setTimeout(() => {
           setDieHopeState("idle");
           setDieFearState("idle");
         }, 1000);
       }, 150);
-    }, 800); // Wait for wordmark to animate in first
-  }, [skipped]);
+    }, 800);
+  }, [phase]);
 
   const cycleNumbers = useCallback((
     setVal: (v: string) => void,
