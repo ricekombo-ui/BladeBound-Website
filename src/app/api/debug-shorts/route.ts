@@ -21,7 +21,18 @@ function parseIsoDuration(iso: string): number {
 }
 
 export async function GET() {
-  if (!API_KEY) return NextResponse.json({ error: "No API key" }, { status: 500 });
+  // Diagnostic: show what env context looks like
+  const envDiag = {
+    hasApiKey: !!API_KEY,
+    apiKeyLength: API_KEY?.length ?? 0,
+    apiKeyPrefix: API_KEY?.slice(0, 8) ?? "none",
+    VERCEL_ENV: process.env.VERCEL_ENV,
+    NODE_ENV: process.env.NODE_ENV,
+    allEnvKeyCount: Object.keys(process.env).length,
+    envKeysContainingYoutube: Object.keys(process.env).filter(k => k.toLowerCase().includes("youtube")),
+  };
+
+  if (!API_KEY) return NextResponse.json({ error: "No API key", diag: envDiag }, { status: 500 });
 
   const results: Record<string, unknown> = {};
 
