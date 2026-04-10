@@ -132,39 +132,51 @@ export async function getFeaturedVideos(): Promise<VideoItem[]> {
   }
 }
 
-// Returns all shorts from the dedicated shorts playlist, ordered:
-// [0] most viewed  [1] most recent (by publishedAt)  [2] random (≠ 0 and ≠ 1)  [3+] rest
+// Returns shorts ordered: [0] most viewed, [1] most recent, [2] random (≠0, ≠1), [3+] rest.
+// Primary source: dedicated shorts playlist. If the playlist has <3 unique videos,
+// supplements from channel uploads (filtering to actual shorts ≤60s) so we always
+// have at least 3 distinct videos.
 export async function getShortsFromPlaylist(): Promise<VideoItem[]> {
   if (!API_KEY) return FALLBACK_SHORTS;
   try {
-    const all = await getPlaylistVideoDetails(SHORTS_PLAYLIST, 50);
+    // Fetch playlist videos and channel uploads in parallel
+    const uploadsId = await getUploadsPlaylistId(CHANNEL_ID);
+    const [playlistVideos, uploads] = await Promise.all([
+      getPlaylistVideoDetails(SHORTS_PLAYLIST, 50),
+      getPlaylistVideoDetails(uploadsId, 50),
+    ]);
+
+    // Channel shorts = uploads with duration ≤ 60s
+    const channelShorts = uploads.filter((v) => v.duration <= 60);
+
+    // Merge: playlist first (preferred), then channel shorts as supplement (no dupes)
+    const seenIds = new Set<string>(playlistVideos.map((v) => v.id));
+    const all: VideoDetail[] = [
+      ...playlistVideos,
+      ...channelShorts.filter((v) => !seenIds.has(v.id)),
+    ];
+
     if (all.length === 0) return FALLBACK_SHORTS;
 
-    // Most viewed
-    const byViews = [...all].sort((a, b) => b.views - a.views);
-    const mostViewed = byViews[0];
+    // Most viewed — prefer from playlist, fall back to all
+    const primaryPool = playlistVideos.length > 0 ? playlistVideos : all;
+    const mostViewed = [...primaryPool].sort((a, b) => b.views - a.views)[0];
 
-    // Most recent by publish date
-    const byDate = [...all].sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
-    const mostRecent = byDate[0];
+    // Most recent by publishedAt — prefer from playlist, fall back to all
+    const mostRecent = [...primaryPool].sort((a, b) =>
+      a.publishedAt < b.publishedAt ? 1 : -1
+    )[0];
 
-    // Random — must differ from both
-    const pool = all.filter(
+    // Random — draw from full merged pool so we always find a unique 3rd video
+    const randPool = all.filter(
       (v) => v.id !== mostViewed.id && v.id !== mostRecent.id
     );
+    const random =
+      randPool.length > 0
+        ? randPool[Math.floor(Math.random() * randPool.length)]
+        : all.find((v) => v.id !== mostViewed.id) ?? all[0];
 
-    let random: VideoDetail;
-    if (pool.length > 0) {
-      random = pool[Math.floor(Math.random() * pool.length)];
-    } else if (all.length >= 3) {
-      // If all[0] and all[1] are the top 2, pick all[2]
-      random = all.find((v) => v.id !== mostViewed.id && v.id !== mostRecent.id) ?? byViews[1];
-    } else {
-      // Only 1 or 2 unique videos — use a duplicate as last resort
-      random = all[all.length - 1];
-    }
-
-    // Remaining shorts (not already in top 3 positions)
+    // Remaining (everything not in top 3)
     const topIds = new Set([mostViewed.id, mostRecent.id, random.id]);
     const rest = all.filter((v) => !topIds.has(v.id));
 
