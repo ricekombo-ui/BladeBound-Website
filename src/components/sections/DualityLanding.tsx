@@ -235,9 +235,15 @@ export default function DualityLanding() {
   const enteredRef = useRef(false);
   const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // On mount: reveal splash only for new visitors (no sessionStorage on server)
+  // On mount: reveal splash only if no visit in the last 24 hours
   useEffect(() => {
-    if (sessionStorage.getItem("bb_entered") !== "true") {
+    const TWENTY_FOUR_H = 24 * 60 * 60 * 1000;
+    try {
+      const ts = localStorage.getItem("bb_entered");
+      const isRecent = ts && Date.now() - parseInt(ts, 10) < TWENTY_FOUR_H;
+      if (!isRecent) setPhase("idle");
+    } catch {
+      // localStorage unavailable — show splash
       setPhase("idle");
     }
   }, []);
@@ -316,8 +322,8 @@ export default function DualityLanding() {
       setTimeout(() => { setShowResult(true); setPhase("result"); }, 2100);
       autoAdvanceTimer.current = setTimeout(() => {
         sound?.transition();
-        sessionStorage.setItem("bb_entered", "true");
-        sessionStorage.setItem("bb_result", dom);
+        localStorage.setItem("bb_entered", String(Date.now()));
+        localStorage.setItem("bb_result", dom);
         setPhase("exit");
         setTimeout(() => setPhase("done"), 1600);
       }, 7200);
@@ -331,7 +337,7 @@ export default function DualityLanding() {
       autoAdvanceTimer.current = null;
     }
     sound?.transition();
-    sessionStorage.setItem("bb_entered", "true");
+    try { localStorage.setItem("bb_entered", String(Date.now())); } catch {}
     setPhase("exit");
     setTimeout(() => setPhase("done"), 1600);
   }, [phase]);

@@ -12,7 +12,7 @@ export default function AmbientTheme() {
 
   useEffect(() => {
     try {
-      const stored = sessionStorage.getItem("bb_result");
+      const stored = localStorage.getItem("bb_result");
       if (stored === "hope" || stored === "fear") {
         setResult(stored);
       }
@@ -23,7 +23,7 @@ export default function AmbientTheme() {
     // Listen for storage changes (in case dice is re-rolled)
     const handleStorage = () => {
       try {
-        const stored = sessionStorage.getItem("bb_result");
+        const stored = localStorage.getItem("bb_result");
         if (stored === "hope" || stored === "fear") {
           setResult(stored);
         }
