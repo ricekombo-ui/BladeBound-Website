@@ -100,9 +100,11 @@ async function getPlaylistVideoDetails(
 export async function getFeaturedVideos(): Promise<VideoItem[]> {
   if (!API_KEY) return FALLBACK_FEATURED;
   try {
-    // 1. Most viewed from Sage Touched playlist
+    // 1. Most viewed from Sage Touched playlist (long-form only, no shorts)
     const playlistVideos = await getPlaylistVideoDetails(SAGE_TOUCHED_PLAYLIST);
-    const mostViewed = [...playlistVideos].sort((a, b) => b.views - a.views)[0];
+    const mostViewed = [...playlistVideos]
+      .filter((v) => v.duration > 60)
+      .sort((a, b) => b.views - a.views)[0];
 
     // 2. Most recent from channel (long-form only, sorted by publishedAt desc)
     const uploadsId = await getUploadsPlaylistId(CHANNEL_ID);
