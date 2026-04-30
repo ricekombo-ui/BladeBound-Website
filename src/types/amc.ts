@@ -24,6 +24,12 @@ export interface TaskSubtask {
   created_at: string;
 }
 
+export interface TaskAssignee {
+  task_id: string;
+  profile_id: string;
+  profile: Profile;
+}
+
 export interface Task {
   id: string;
   title: string;
@@ -37,6 +43,7 @@ export interface Task {
   updated_at: string;
   profile?: Profile;
   subtasks?: TaskSubtask[];
+  assignees?: TaskAssignee[];
 }
 
 // ── Goals ───────────────────────────────────────────────────────────────────

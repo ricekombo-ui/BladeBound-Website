@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import AMCShell from "@/components/amc/AMCShell";
-import type { Profile, Task, TaskStatus, TaskType, TaskPriority, TaskSubtask } from "@/types/amc";
+import type { Profile, Task, TaskStatus, TaskType, TaskPriority, TaskSubtask, TaskAssignee } from "@/types/amc";
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
@@ -62,6 +62,9 @@ export default function PipelinePage() {
   const [newSubtask, setNewSubtask] = useState("");
   const [addingSubtask, setAddingSubtask] = useState(false);
 
+  // Assignee state for open modal
+  const [modalAssignees, setModalAssignees] = useState<TaskAssignee[]>([]);
+
   // ── Load ──────────────────────────────────────────────────────────────────
 
   const load = useCallback(async () => {
@@ -71,7 +74,7 @@ export default function PipelinePage() {
       supabase.from("profiles").select("*").eq("user_id", user.id).single(),
       supabase.from("profiles").select("*").order("name"),
       supabase.from("tasks")
-        .select("*, profile:profiles!tasks_owner_id_fkey(*), subtasks:task_subtasks(*)")
+        .select("*, profile:profiles!tasks_owner_id_fkey(*), subtasks:task_subtasks(*), assignees:task_assignees(task_id, profile_id, profile:profiles!task_assignees_profile_id_fkey(*))")
         .order("created_at", { ascending: false }),
     ]);
     setProfile(pRes.data);
@@ -89,12 +92,14 @@ export default function PipelinePage() {
     setModalSubtasks(
       isNew ? [] : [...(task.subtasks ?? [])].sort((a, b) => a.order_index - b.order_index)
     );
+    setModalAssignees(isNew ? [] : (task.assignees ?? []));
     setNewSubtask("");
   }
 
   function closeModal() {
     setModal({ open: false, task: blank(), isNew: true });
     setModalSubtasks([]);
+    setModalAssignees([]);
     setNewSubtask("");
   }
 
@@ -124,15 +129,20 @@ export default function PipelinePage() {
         .insert(payload)
         .select("*, profile:profiles!tasks_owner_id_fkey(*)")
         .single();
-      if (data && modalSubtasks.length > 0) {
-        await supabase.from("task_subtasks").insert(
-          modalSubtasks.map((s, i) => ({
-            task_id: (data as Task).id,
-            title: s.title,
-            completed: false,
-            order_index: i,
-          }))
-        );
+      if (data) {
+        const taskId = (data as Task).id;
+        const ops: Promise<unknown>[] = [];
+        if (modalSubtasks.length > 0) {
+          ops.push(supabase.from("task_subtasks").insert(
+            modalSubtasks.map((s, i) => ({ task_id: taskId, title: s.title, completed: false, order_index: i }))
+          ));
+        }
+        if (modalAssignees.length > 0) {
+          ops.push(supabase.from("task_assignees").insert(
+            modalAssignees.map(a => ({ task_id: taskId, profile_id: a.profile_id }))
+          ));
+        }
+        if (ops.length > 0) await Promise.all(ops);
       }
     } else {
       await supabase.from("tasks").update(payload).eq("id", modal.task.id!);
@@ -194,6 +204,33 @@ export default function PipelinePage() {
       t.id === s.task_id ? { ...t, subtasks: (t.subtasks ?? []).filter(x => x.id !== s.id) } : t
     ));
     if (s.task_id) await supabase.from("task_subtasks").delete().eq("id", s.id);
+  }
+
+  async function toggleAssignee(p: Profile) {
+    const taskId = modal.task.id;
+    const already = modalAssignees.some(a => a.profile_id === p.id);
+    if (modal.isNew) {
+      // manage locally until save
+      setModalAssignees(prev =>
+        already ? prev.filter(a => a.profile_id !== p.id)
+                : [...prev, { task_id: "", profile_id: p.id, profile: p }]
+      );
+      return;
+    }
+    if (already) {
+      setModalAssignees(prev => prev.filter(a => a.profile_id !== p.id));
+      setTasks(prev => prev.map(t =>
+        t.id === taskId ? { ...t, assignees: (t.assignees ?? []).filter(a => a.profile_id !== p.id) } : t
+      ));
+      await supabase.from("task_assignees").delete().eq("task_id", taskId!).eq("profile_id", p.id);
+    } else {
+      const newAssignee: TaskAssignee = { task_id: taskId!, profile_id: p.id, profile: p };
+      setModalAssignees(prev => [...prev, newAssignee]);
+      setTasks(prev => prev.map(t =>
+        t.id === taskId ? { ...t, assignees: [...(t.assignees ?? []), newAssignee] } : t
+      ));
+      await supabase.from("task_assignees").insert({ task_id: taskId!, profile_id: p.id });
+    }
   }
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -310,6 +347,27 @@ export default function PipelinePage() {
             <Input type="date" value={modal.task.due_date ?? ""} onChange={v => setModal(m => ({ ...m, task: { ...m.task, due_date: v || null } }))} />
           </Field>
 
+          {/* Assignees */}
+          <div style={{ marginBottom: "1rem" }}>
+            <label style={{ display: "block", fontSize: "0.65rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+              Working On This
+            </label>
+            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+              {profiles.map(p => {
+                const active = modalAssignees.some(a => a.profile_id === p.id);
+                return (
+                  <button key={p.id} type="button" onClick={() => toggleAssignee(p)}
+                    style={{ display: "flex", alignItems: "center", gap: "0.45rem", padding: "0.35rem 0.7rem", borderRadius: 20, border: `1.5px solid ${active ? p.avatar_color : "rgba(255,255,255,0.1)"}`, background: active ? p.avatar_color + "22" : "transparent", cursor: "pointer", transition: "all 150ms" }}>
+                    <div style={{ width: 18, height: 18, borderRadius: "50%", background: p.avatar_color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.48rem", fontWeight: 700, color: "#07050f", flexShrink: 0 }}>
+                      {p.name.slice(0, 2).toUpperCase()}
+                    </div>
+                    <span style={{ fontSize: "0.75rem", color: active ? "#fdf2e1" : "rgba(255,255,255,0.4)", fontWeight: active ? 600 : 400 }}>{p.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Checklist */}
           <div style={{ marginBottom: "1rem" }}>
             <label style={{ display: "block", fontSize: "0.65rem", color: "rgba(255,255,255,0.4)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.5rem" }}>
@@ -389,8 +447,15 @@ function TaskCard({ task, columns, currentCol, onEdit, onMove }: {
           </span>
         )}
       </div>
-      {task.profile && (
-        <div style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.25)", marginTop: "0.35rem" }}>{task.profile.name}</div>
+      {(task.assignees ?? []).length > 0 && (
+        <div style={{ display: "flex", gap: "0.2rem", marginTop: "0.4rem", flexWrap: "wrap" }}>
+          {(task.assignees ?? []).map(a => (
+            <div key={a.profile_id} title={a.profile.name}
+              style={{ width: 20, height: 20, borderRadius: "50%", background: a.profile.avatar_color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.48rem", fontWeight: 700, color: "#07050f" }}>
+              {a.profile.name.slice(0, 2).toUpperCase()}
+            </div>
+          ))}
+        </div>
       )}
       <div style={{ display: "flex", gap: "0.2rem", marginTop: "0.5rem", flexWrap: "wrap" }} onClick={e => e.stopPropagation()}>
         {columns.filter(c => c.key !== currentCol).map(c => (
