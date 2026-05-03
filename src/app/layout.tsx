@@ -18,11 +18,13 @@ export const metadata: Metadata = {
     title: `${SITE.name} | ${SITE.tagline}`,
     description: SITE.description,
     url: `https://${SITE.domain}`,
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: SITE.name }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE.name} | ${SITE.tagline}`,
     description: SITE.description,
+    images: ["/og-image.png"],
   },
 };
 
