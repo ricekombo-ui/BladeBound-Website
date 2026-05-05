@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { VideoItem } from "@/lib/youtube";
 
 const SLOT_LABELS: Record<number, string> = {
@@ -33,7 +33,6 @@ function ShortThumbnail({
         className="w-full h-full object-cover"
       />
       <div className="absolute inset-0 bg-void/50 group-hover:bg-void/30 transition-colors duration-300" />
-      {/* Arrow hint */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="w-9 h-9 rounded-full bg-ember/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <svg
@@ -53,23 +52,47 @@ function ShortThumbnail({
   );
 }
 
-function ShortCenter({ video }: { video: VideoItem }) {
+function ShortCenter({ video, active }: { video: VideoItem; active: boolean }) {
+  const thumbUrl = `https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`;
   return (
     <div className="relative overflow-hidden rounded-2xl border border-ember/20 shadow-2xl shadow-ember/10 aspect-[9/16] w-48 md:w-56 flex-none">
-      <iframe
-        key={video.id}
-        src={`https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&rel=0&playsinline=1`}
-        title={video.title}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-        className="absolute inset-0 w-full h-full"
-      />
+      {active ? (
+        <iframe
+          key={video.id}
+          src={`https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&rel=0&playsinline=1`}
+          title={video.title}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="absolute inset-0 w-full h-full"
+        />
+      ) : (
+        /* Thumbnail placeholder while out of view */
+        <img
+          src={thumbUrl}
+          alt={video.title}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      )}
     </div>
   );
 }
 
 export default function ShortsWheel({ shorts }: { shorts: VideoItem[] }) {
   const [centerIndex, setCenterIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Play when scrolled into view, stop when scrolled out
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.5 } // at least 50% of the carousel must be visible
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   if (shorts.length === 0) return null;
 
@@ -83,7 +106,7 @@ export default function ShortsWheel({ shorts }: { shorts: VideoItem[] }) {
   const centerLabel = SLOT_LABELS[centerIndex] ?? null;
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div ref={containerRef} className="flex flex-col items-center gap-4">
       {/* Carousel row */}
       <div className="flex items-center justify-center gap-3 md:gap-5 w-full">
         {/* Left nav arrow */}
@@ -105,8 +128,8 @@ export default function ShortsWheel({ shorts }: { shorts: VideoItem[] }) {
           side="left"
         />
 
-        {/* Center — large, autoplay */}
-        <ShortCenter key={shorts[centerIndex].id} video={shorts[centerIndex]} />
+        {/* Center — plays only when visible */}
+        <ShortCenter video={shorts[centerIndex]} active={isVisible} />
 
         {/* Right thumbnail */}
         <ShortThumbnail
