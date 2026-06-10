@@ -118,12 +118,14 @@ export default function D12Canvas({ color, value, dieState, floatDelay = 0 }: D1
     const SZ    = canvas.width;          // 240 px internal
     const SCALE = SZ * 0.30;            // radius in px
     const FOV   = 5.0;                  // perspective strength
+    const CAMZ  = FOV / 0.55;           // pinhole camera position on +z axis
     const CX    = SZ / 2;
     const CY    = SZ / 2;
     const LIGHT = norm([0.5, -0.7, 1.0]); // light from top-right-front
 
     function project(v: number[]) {
-      const p = FOV / (FOV + v[2] * 0.55);
+      // Camera sits at +z looking at origin: nearer vertices (larger z) appear bigger
+      const p = FOV / (FOV - v[2] * 0.55);
       return { x: CX + v[0] * SCALE * p, y: CY + v[1] * SCALE * p, z: v[2] };
     }
 
@@ -162,7 +164,7 @@ export default function D12Canvas({ color, value, dieState, floatDelay = 0 }: D1
       // ── Per-face: normal, visibility, depth, brightness ────────
       type FD = {
         face: number[]; pts: number[][]; visible: boolean;
-        depth: number; brightness: number; center: number[];
+        depth: number; brightness: number; center: number[]; facing: number;
       };
 
       const fd: FD[] = FACES.map(face => {
@@ -173,12 +175,16 @@ export default function D12Canvas({ color, value, dieState, floatDelay = 0 }: D1
         // Ensure n points outward (same direction as face center)
         const ctr = pts.reduce((s,v)=>[s[0]+v[0],s[1]+v[1],s[2]+v[2]],[0,0,0]).map(x=>x/5);
         if (dot(n, ctr) < 0) n = [-n[0],-n[1],-n[2]];
+        // Perspective-correct culling: face is visible if its normal points
+        // toward the camera at [0,0,CAMZ], not just toward +z
+        const toCam = [-ctr[0], -ctr[1], CAMZ - ctr[2]];
         return {
           face, pts,
-          visible:    n[2] > 0,
+          visible:    dot(n, toCam) > 0,
           depth:      ctr[2],
           brightness: Math.max(0.48, dot(n, LIGHT)), // high floor — no face ever goes dark
           center:     ctr,
+          facing:     dot(n, norm(toCam)),
         };
       });
 
@@ -187,11 +193,10 @@ export default function D12Canvas({ color, value, dieState, floatDelay = 0 }: D1
 
       ctx.clearRect(0, 0, SZ, SZ);
 
-      let frontIdx = -1;
-      let frontZ   = -Infinity;
+      let frontFacing = -Infinity;
       let frontPts: {x:number;y:number}[] = [];
 
-      vis.forEach((f, i) => {
+      vis.forEach((f) => {
         const pv = f.pts.map(v => project(v));
 
         // Lerp face color by brightness
@@ -230,10 +235,9 @@ export default function D12Canvas({ color, value, dieState, floatDelay = 0 }: D1
           ctx.fill();
         }
 
-        // Track front face for number
-        if (f.center[2] > frontZ) {
-          frontZ   = f.center[2];
-          frontIdx = i;
+        // Track the face most squarely pointed at the camera for the number
+        if (f.facing > frontFacing) {
+          frontFacing = f.facing;
           frontPts = pv;
         }
       });
