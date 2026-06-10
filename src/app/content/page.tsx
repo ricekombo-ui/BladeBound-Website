@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import SeriesCard from "@/components/sections/SeriesCard";
 import ContentCard from "@/components/sections/ContentCard";
+import ClassShowcase from "@/components/sections/ClassShowcase";
 import CTABlock from "@/components/ui/CTABlock";
 import Button from "@/components/ui/Button";
 import { LINKS } from "@/lib/constants";
@@ -129,6 +130,27 @@ export default function ContentPage() {
             <SeriesCard key={series.title} {...series} />
           ))}
         </div>
+      </SectionWrapper>
+
+      {/* Divider */}
+      <div className="section-divider" />
+
+      {/* Class Showcase */}
+      <SectionWrapper>
+        <div className="mb-10">
+          <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
+            The Classes
+          </span>
+          <h2 className="font-serif text-3xl md:text-4xl text-bone mb-3">
+            Every Class. Two Ways Deep.
+          </h2>
+          <p className="text-stone text-base md:text-lg max-w-2xl">
+            Each Daggerheart class gets a full Sage Touched breakdown on YouTube — free, always.
+            Members of The Forge also get the matching build infographic: subclass paths, key
+            choices, and table-ready guidance on one sheet.
+          </p>
+        </div>
+        <ClassShowcase />
       </SectionWrapper>
 
       {/* Divider */}
