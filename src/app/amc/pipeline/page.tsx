@@ -131,7 +131,7 @@ export default function PipelinePage() {
         .single();
       if (data) {
         const taskId = (data as Task).id;
-        const ops: Promise<unknown>[] = [];
+        const ops: PromiseLike<unknown>[] = [];
         if (modalSubtasks.length > 0) {
           ops.push(supabase.from("task_subtasks").insert(
             modalSubtasks.map((s, i) => ({ task_id: taskId, title: s.title, completed: false, order_index: i }))
