@@ -11,7 +11,7 @@ export const LINKS = {
   youtube: "https://youtube.com/@BladeBoundgames",
   discord: "https://discord.gg/gegMd8Ey7t",
   startplaying: "https://startplaying.games/gm/ricekombo",
-  patreon: "https://patreon.com/BladeBoundSaga?utm_medium=unknown&utm_source=join_link&utm_campaign=creatorshare_creator&utm_content=copyLink",
+  patreon: "https://www.patreon.com/BladeBound",
   instagram: "https://www.instagram.com/bladeboundsaga/",
   email: "mailto:contact@bladebound.games",
 };
