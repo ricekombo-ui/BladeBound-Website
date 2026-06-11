@@ -74,17 +74,37 @@ const tiers = [
 // move entries into FREE_SAMPLES below with real image paths.
 
 const VAULT_ITEMS = [
-  { title: "Guardian Subclass Infographic", kind: "Build Breakdown" },
-  { title: "Rogue | Syndicate Build", kind: "Build Breakdown" },
+  { title: "Vengeance — Guardian Quick Guide", kind: "Class Build" },
+  { title: "Wordsmith — Bard Quick Guide", kind: "Class Build" },
+  { title: "Primal Origin — Sorcerer Quick Guide", kind: "Class Build" },
+  { title: "Rogue | Syndicate & Nightwalker Builds", kind: "Class Build" },
   { title: "Adversary Pack — Vol. 1", kind: "GM Tools" },
   { title: "Connection Question Pack", kind: "Session Zero" },
   { title: "Magic Item Drop — Weekly", kind: "Homebrew" },
   { title: "Campaign Frame Toolkit", kind: "GM Tools" },
 ];
 
-// Free samples — add { title, kind, image: "/armory/filename.png", download?: string }
-// and they render full-size above the locked vault.
-const FREE_SAMPLES: { title: string; kind: string; image: string; download?: string }[] = [];
+// Free samples — fully visible proof of what The Forge delivers.
+const FREE_SAMPLES: { title: string; kind: string; image: string; download?: string }[] = [
+  {
+    title: "Stalwart — Guardian Quick Guide",
+    kind: "Class Build",
+    image: "/armory/stalwart-guardian.jpg",
+    download: "/armory/stalwart-guardian.jpg",
+  },
+  {
+    title: "Troubadour — Bard Quick Guide",
+    kind: "Class Build",
+    image: "/armory/troubadour-bard.jpg",
+    download: "/armory/troubadour-bard.jpg",
+  },
+  {
+    title: "Elemental Origin — Sorcerer Quick Guide",
+    kind: "Class Build",
+    image: "/armory/elemental-origin-sorcerer.jpg",
+    download: "/armory/elemental-origin-sorcerer.jpg",
+  },
+];
 
 export default function SupportPage() {
   return (
@@ -182,22 +202,38 @@ export default function SupportPage() {
           </p>
         </div>
 
-        {/* Free samples (when released) */}
+        {/* Free samples — visible proof of Forge quality */}
         {FREE_SAMPLES.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             {FREE_SAMPLES.map((item) => (
-              <div key={item.title} className="rounded-lg overflow-hidden border border-ember/30 bg-shadow/10">
-                <img src={item.image} alt={item.title} className="w-full" />
-                <div className="p-4 flex items-center justify-between">
-                  <div>
-                    <p className="text-bone text-sm font-semibold">{item.title}</p>
-                    <p className="text-ember text-xs uppercase tracking-wider">Free Sample · {item.kind}</p>
+              <div key={item.title} className="rounded-lg overflow-hidden border border-ember/30 bg-shadow/10 flex flex-col group">
+                <a
+                  href={item.image}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative block aspect-[3/4] overflow-hidden"
+                  title="View full size"
+                >
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-void/90 to-transparent" />
+                  <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-bone/80 text-[10px] uppercase tracking-widest border border-white/20 rounded-full px-3 py-1 bg-void/60 backdrop-blur-sm group-hover:border-ember/50 group-hover:text-ember transition-colors">
+                    View Full Guide
+                  </span>
+                </a>
+                <div className="p-4 flex items-center justify-between gap-3 mt-auto">
+                  <div className="min-w-0">
+                    <p className="text-bone text-sm font-semibold leading-snug">{item.title}</p>
+                    <p className="text-ember text-xs uppercase tracking-wider mt-0.5">Free Sample · {item.kind}</p>
                   </div>
                   {item.download && (
                     <a
                       href={item.download}
                       download
-                      className="px-4 py-2 rounded-md bg-ember text-void text-xs font-semibold uppercase tracking-wider hover:bg-ember/90 transition-colors"
+                      className="flex-shrink-0 px-3.5 py-2 rounded-md bg-ember text-void text-xs font-semibold uppercase tracking-wider hover:bg-ember/90 transition-colors"
                     >
                       Download
                     </a>

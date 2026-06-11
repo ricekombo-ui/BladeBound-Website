@@ -19,19 +19,21 @@ interface ClassEntry {
   tagline: string;
   /** Sage Touched episode URL — defaults to the playlist until each episode is linked */
   video?: string;
+  /** Free sample build guide — { label, href } when one subclass guide is free */
+  sample?: { label: string; href: string };
 }
 
 const SAGE_TOUCHED_PLAYLIST =
   "https://www.youtube.com/playlist?list=PLoQqS6kdYti3BOL9CHTpTH8i3zowr4Zlt";
 
 const CLASSES: ClassEntry[] = [
-  { name: "Bard",     domains: ["Grace", "Codex"],     tagline: "Words that wound, songs that shield.",        video: "https://www.youtube.com/watch?v=bzhDN0u4b4Q" },
+  { name: "Bard",     domains: ["Grace", "Codex"],     tagline: "Words that wound, songs that shield.",        video: "https://www.youtube.com/watch?v=bzhDN0u4b4Q", sample: { label: "Troubadour guide", href: "/armory/troubadour-bard.jpg" } },
   { name: "Druid",    domains: ["Sage", "Arcana"],     tagline: "The wild does not ask permission.",           video: "https://www.youtube.com/watch?v=aEemKzZ2RJE" },
-  { name: "Guardian", domains: ["Valor", "Blade"],     tagline: "The wall between the party and the dark.",    video: "https://www.youtube.com/watch?v=pqkdB0jxLMg" },
+  { name: "Guardian", domains: ["Valor", "Blade"],     tagline: "The wall between the party and the dark.",    video: "https://www.youtube.com/watch?v=pqkdB0jxLMg", sample: { label: "Stalwart guide", href: "/armory/stalwart-guardian.jpg" } },
   { name: "Ranger",   domains: ["Bone", "Sage"],       tagline: "Every trail ends where the hunter decides.",  video: "https://www.youtube.com/watch?v=iXUzcmpGFA4" },
   { name: "Rogue",    domains: ["Midnight", "Grace"],  tagline: "Unseen, unheard, unforgotten.",               video: "https://www.youtube.com/watch?v=zdMwujNWPig" },
   { name: "Seraph",   domains: ["Splendor", "Valor"],  tagline: "Faith with a blade's edge.",                  video: "https://www.youtube.com/watch?v=aGegKuhWblQ" },
-  { name: "Sorcerer", domains: ["Arcana", "Midnight"], tagline: "Power that was never meant to be tamed.",     video: "https://www.youtube.com/watch?v=CN0rB7WPSnk" },
+  { name: "Sorcerer", domains: ["Arcana", "Midnight"], tagline: "Power that was never meant to be tamed.",     video: "https://www.youtube.com/watch?v=CN0rB7WPSnk", sample: { label: "Elemental Origin guide", href: "/armory/elemental-origin-sorcerer.jpg" } },
   { name: "Warrior",  domains: ["Blade", "Bone"],      tagline: "Steel answers what words cannot.",            video: "https://www.youtube.com/watch?v=beM3dRGy-iU" },
   { name: "Wizard",   domains: ["Codex", "Splendor"],  tagline: "Knowledge is the sharpest weapon.",           video: "https://www.youtube.com/watch?v=7Oi15yx5JcM" },
 ];
@@ -95,6 +97,26 @@ export default function ClassShowcase() {
                     <span className="text-stone/50 text-xs ml-2">Free · Sage Touched</span>
                   </span>
                 </a>
+
+                {/* Free sample guide */}
+                {cls.sample && (
+                  <a
+                    href={cls.sample.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2.5 text-sm text-bone hover:text-ember transition-colors mb-2.5"
+                  >
+                    <span className="w-6 h-6 rounded-full bg-ember/15 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-3 h-3 text-ember" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                      </svg>
+                    </span>
+                    <span>
+                      {cls.sample.label}
+                      <span className="text-stone/50 text-xs ml-2">Free Sample</span>
+                    </span>
+                  </a>
+                )}
 
                 {/* Forge path */}
                 <a
