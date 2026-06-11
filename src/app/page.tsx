@@ -9,6 +9,7 @@ import ScrollReveal from "@/components/ui/ScrollReveal";
 import ShortsWheel from "@/components/ui/ShortsWheel";
 import EmberDivider from "@/components/ui/EmberDivider";
 import EmberGlow from "@/components/ui/EmberGlow";
+import DualityScroll from "@/components/ui/DualityScroll";
 import { LINKS } from "@/lib/constants";
 import { getFeaturedVideos, getShortsFromPlaylist } from "@/lib/youtube";
 
@@ -60,6 +61,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <DualityScroll />
       <Hero featuredVideos={featuredVideos} />
 
       {/* What BladeBound Offers */}
