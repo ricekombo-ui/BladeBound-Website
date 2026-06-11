@@ -21,7 +21,7 @@ export const NAV_LINKS = [
   { label: "Play", href: "/play" },
   { label: "Content", href: "/content" },
   { label: "Community", href: "/community" },
-  { label: "Armory", href: "/armory" },
+  { label: "Membership", href: "/armory" },
   { label: "Resources", href: "/resources" },
   { label: "Contact", href: "/contact" },
 ];
