@@ -8,11 +8,13 @@ import DiceField from "@/components/ui/DiceField";
 import FloatingPlatformBar from "@/components/ui/FloatingPlatformBar";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import AmbientTheme from "@/components/ui/AmbientTheme";
+import SiteBackground from "@/components/ui/SiteBackground";
 
 export default function ClientShell({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider>
       <DualityLanding />
+      <SiteBackground />
       <ParticleField />
       <DiceField />
       <AmbientTheme />

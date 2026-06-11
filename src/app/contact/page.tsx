@@ -21,7 +21,7 @@ export default function ContactPage() {
   return (
     <>
       {/* Page Hero */}
-      <section className="bg-void border-b border-white/5">
+      <section className="border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-4">
             Contact
