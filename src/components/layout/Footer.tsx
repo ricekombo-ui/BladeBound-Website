@@ -41,7 +41,11 @@ export default function Footer() {
             <ul className="space-y-2">
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-stone hover:text-bone text-sm transition-colors">
+                  <Link
+                    href={link.href}
+                    {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className="text-stone hover:text-bone text-sm transition-colors"
+                  >
                     {link.label}
                   </Link>
                 </li>

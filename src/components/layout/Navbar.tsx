@@ -60,6 +60,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
+                {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 className="group relative text-xs text-stone hover:text-bone transition-colors duration-200"
               >
                 {link.label}
@@ -89,6 +90,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
+                {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 onClick={() => setOpen(false)}
                 className="py-2.5 text-sm text-stone hover:text-bone transition-colors"
               >
