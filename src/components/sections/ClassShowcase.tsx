@@ -25,15 +25,15 @@ const SAGE_TOUCHED_PLAYLIST =
   "https://www.youtube.com/playlist?list=PLoQqS6kdYti3BOL9CHTpTH8i3zowr4Zlt";
 
 const CLASSES: ClassEntry[] = [
-  { name: "Bard",     domains: ["Grace", "Codex"],     tagline: "Words that wound, songs that shield." },
-  { name: "Druid",    domains: ["Sage", "Arcana"],     tagline: "The wild does not ask permission." },
-  { name: "Guardian", domains: ["Valor", "Blade"],     tagline: "The wall between the party and the dark." },
-  { name: "Ranger",   domains: ["Bone", "Sage"],       tagline: "Every trail ends where the hunter decides." },
-  { name: "Rogue",    domains: ["Midnight", "Grace"],  tagline: "Unseen, unheard, unforgotten." },
-  { name: "Seraph",   domains: ["Splendor", "Valor"],  tagline: "Faith with a blade's edge." },
-  { name: "Sorcerer", domains: ["Arcana", "Midnight"], tagline: "Power that was never meant to be tamed." },
-  { name: "Warrior",  domains: ["Blade", "Bone"],      tagline: "Steel answers what words cannot." },
-  { name: "Wizard",   domains: ["Codex", "Splendor"],  tagline: "Knowledge is the sharpest weapon." },
+  { name: "Bard",     domains: ["Grace", "Codex"],     tagline: "Words that wound, songs that shield.",        video: "https://www.youtube.com/watch?v=bzhDN0u4b4Q" },
+  { name: "Druid",    domains: ["Sage", "Arcana"],     tagline: "The wild does not ask permission.",           video: "https://www.youtube.com/watch?v=aEemKzZ2RJE" },
+  { name: "Guardian", domains: ["Valor", "Blade"],     tagline: "The wall between the party and the dark.",    video: "https://www.youtube.com/watch?v=pqkdB0jxLMg" },
+  { name: "Ranger",   domains: ["Bone", "Sage"],       tagline: "Every trail ends where the hunter decides.",  video: "https://www.youtube.com/watch?v=iXUzcmpGFA4" },
+  { name: "Rogue",    domains: ["Midnight", "Grace"],  tagline: "Unseen, unheard, unforgotten.",               video: "https://www.youtube.com/watch?v=zdMwujNWPig" },
+  { name: "Seraph",   domains: ["Splendor", "Valor"],  tagline: "Faith with a blade's edge.",                  video: "https://www.youtube.com/watch?v=aGegKuhWblQ" },
+  { name: "Sorcerer", domains: ["Arcana", "Midnight"], tagline: "Power that was never meant to be tamed.",     video: "https://www.youtube.com/watch?v=CN0rB7WPSnk" },
+  { name: "Warrior",  domains: ["Blade", "Bone"],      tagline: "Steel answers what words cannot.",            video: "https://www.youtube.com/watch?v=beM3dRGy-iU" },
+  { name: "Wizard",   domains: ["Codex", "Splendor"],  tagline: "Knowledge is the sharpest weapon.",           video: "https://www.youtube.com/watch?v=7Oi15yx5JcM" },
 ];
 
 export default function ClassShowcase() {
