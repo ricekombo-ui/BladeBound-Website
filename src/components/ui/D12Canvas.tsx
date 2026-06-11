@@ -249,7 +249,7 @@ export default function D12Canvas({ color, value, dieState, floatDelay = 0 }: D1
         const fs  = SZ * 0.25;
 
         ctx.save();
-        ctx.font          = `700 ${fs}px "Playfair Display", Georgia, serif`;
+        ctx.font          = `700 ${fs}px "Cinzel", Georgia, serif`;
         ctx.textAlign     = "center";
         ctx.textBaseline  = "middle";
         ctx.shadowColor   = pal.glow;

@@ -76,7 +76,7 @@ function drawD12(
   ctx.stroke();
 
   // Center label
-  ctx.font = `${size * 0.35}px 'Playfair Display', serif`;
+  ctx.font = `${size * 0.35}px 'Cinzel', serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   if (type === "hope") {

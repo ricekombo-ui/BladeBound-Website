@@ -21,32 +21,32 @@ export const metadata: Metadata = {
 
 const whatWeOffer = [
   {
-    icon: "⚔",
+    icon: "blade",
     title: "Daggerheart Education",
     body: "Deep-dive content covering classes, campaign frames, mechanics, and play philosophy. Whether you are new or experienced, there is something here for you.",
   },
   {
-    icon: "🎬",
+    icon: "film",
     title: "Cinematic Actual Play",
     body: "Actual play content that prioritizes story, character, and meaningful stakes. Entertainment and system education in the same seat.",
   },
   {
-    icon: "🎲",
+    icon: "dice",
     title: "Professional GM Services",
     body: "Narrative-first Daggerheart games run by a GM with 200+ sessions of experience. One-shots and campaigns available through StartPlaying.",
   },
   {
-    icon: "🏛",
+    icon: "hall",
     title: "Community Space",
     body: "A Discord community for Daggerheart players, GMs, and fans who care about the craft. Discussion, events, games, and more.",
   },
   {
-    icon: "📖",
+    icon: "book",
     title: "Resources and Guides",
     body: "Free tools, connection questions, build guides, and digital resources to improve your game and your table.",
   },
   {
-    icon: "🔥",
+    icon: "flame",
     title: "Supporter Benefits",
     body: "Back the work and get early access, bonus resources, exclusive games, and a direct line to future projects.",
   },

@@ -490,7 +490,7 @@ export default function DualityLanding() {
           box-shadow: 0 0 16px rgba(213,96,71,0.15);
         }
         .dl-wordmark {
-          font-family: 'Playfair Display', Georgia, serif;
+          font-family: 'Cinzel', Georgia, serif;
           font-size: clamp(1.4rem, 3vw, 2rem);
           font-weight: 600; letter-spacing: 0.25em;
           color: #fdf2e1; text-transform: uppercase;
@@ -556,7 +556,7 @@ export default function DualityLanding() {
           color: rgba(253,242,225,0.3); margin-bottom: 0.6rem;
         }
         .dl-result-hl {
-          font-family: 'Playfair Display', Georgia, serif;
+          font-family: 'Cinzel', Georgia, serif;
           font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700;
           line-height: 1; letter-spacing: 0.05em; margin-bottom: 0.6rem;
         }

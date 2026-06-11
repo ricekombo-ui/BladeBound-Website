@@ -65,7 +65,7 @@ export default function Hero({ featuredVideos }: { featuredVideos?: FeaturedVide
 
             {/* Headline */}
             <h1
-              className="font-serif text-4xl md:text-5xl lg:text-[4.5rem] text-bone leading-[1.08] mb-5"
+              className="font-serif text-3xl md:text-4xl lg:text-[3.4rem] text-bone leading-[1.15] mb-5"
               style={{
                 opacity: entered ? 1 : 0,
                 transform: entered ? "none" : "translateY(30px)",
@@ -101,24 +101,11 @@ export default function Hero({ featuredVideos }: { featuredVideos?: FeaturedVide
               <Button href={LINKS.youtube} variant="primary" size="lg" external>
                 Watch on YouTube
               </Button>
-              <Button href={LINKS.discord} variant="secondary" size="lg" external>
-                Join the Discord
-              </Button>
-              <Button href={LINKS.patreon} variant="ghost" size="md" external>
-                Support on Patreon
+              <Button href="/play" variant="secondary" size="lg">
+                Play in a Game
               </Button>
             </div>
 
-            <div
-              style={{
-                opacity: entered ? 1 : 0,
-                transition: "all 0.7s cubic-bezier(0.22, 1, 0.36, 1) 700ms",
-              }}
-            >
-              <Button href="/play" variant="ghost" size="md">
-                Play in a Game &rarr;
-              </Button>
-            </div>
           </div>
 
           {/* Logo on right side — large and centered in open space */}

@@ -20,7 +20,7 @@ const config: Config = {
         accent: "#914049",
       },
       fontFamily: {
-        serif: ["Georgia", "Cambria", "Times New Roman", "serif"],
+        serif: ["Cinzel", "Georgia", "Cambria", "Times New Roman", "serif"],
         sans: ["Inter", "system-ui", "sans-serif"],
       },
       backgroundImage: {
