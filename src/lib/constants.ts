@@ -9,7 +9,7 @@ export const SITE = {
 
 export const LINKS = {
   youtube: "https://youtube.com/@BladeBoundgames",
-  discord: "https://discord.gg/gegMd8Ey7t",
+  discord: "https://discord.gg/quZ2kprX47",
   startplaying: "https://startplaying.games/gm/ricekombo",
   patreon: "https://www.patreon.com/BladeBound",
   shop: "https://blade-bound-shop.fourthwall.com",
