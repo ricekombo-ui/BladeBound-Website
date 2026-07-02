@@ -64,7 +64,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href={SITE.email} className="text-stone hover:text-bone text-sm transition-colors">
-                  contact@bladebound.games
+                  hello@bladebound.games
                 </Link>
               </li>
             </ul>

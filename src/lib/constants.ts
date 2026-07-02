@@ -2,7 +2,7 @@ export const SITE = {
   name: "BladeBound",
   tagline: "Narrative-First Daggerheart Content",
   domain: "bladebound.games",
-  email: "mailto:contact@bladebound.games",
+  email: "mailto:hello@bladebound.games",
   description:
     "BladeBound is a Daggerheart-focused content brand and tabletop community built around cinematic play, system education, and narrative-first storytelling.",
 };
@@ -14,7 +14,7 @@ export const LINKS = {
   patreon: "https://www.patreon.com/BladeBound",
   shop: "https://blade-bound-shop.fourthwall.com",
   instagram: "https://www.instagram.com/bladeboundsaga/",
-  email: "mailto:contact@bladebound.games",
+  email: "mailto:hello@bladebound.games",
 };
 
 export const NAV_LINKS: { label: string; href: string; external?: boolean }[] = [
