@@ -12,7 +12,7 @@ export const LINKS = {
   discord: "https://discord.gg/quZ2kprX47",
   startplaying: "https://startplaying.games/gm/ricekombo",
   patreon: "https://www.patreon.com/BladeBound",
-  shop: "https://blade-bound-shop.fourthwall.com",
+  shop: "https://shop.bladebound.games",
   instagram: "https://www.instagram.com/bladeboundsaga/",
   email: "mailto:hello@bladebound.games",
 };
@@ -23,7 +23,7 @@ export const NAV_LINKS: { label: string; href: string; external?: boolean }[] = 
   { label: "Content", href: "/content" },
   { label: "Community", href: "/community" },
   { label: "Membership", href: "/armory" },
-  { label: "Shop", href: "https://blade-bound-shop.fourthwall.com", external: true },
+  { label: "Shop", href: "https://shop.bladebound.games", external: true },
   { label: "Resources", href: "/resources" },
   { label: "Contact", href: "/contact" },
 ];
