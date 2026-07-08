@@ -174,7 +174,7 @@ export default function AboutPage() {
             <ScrollReveal key={member.name} delay={i * 150} direction="up">
               <div className="bg-shadow/10 border border-white/5 rounded-lg p-8 hover:border-ember/20 transition-all duration-300 h-full">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-ember/20 to-plum/20 border border-ember/20 flex items-center justify-center">
+                  <div aria-hidden="true" className="w-16 h-16 rounded-full bg-gradient-to-br from-ember/20 to-plum/20 border border-ember/20 flex items-center justify-center">
                     <span className="font-serif text-2xl text-ember">{member.name[0]}</span>
                   </div>
                   <div>

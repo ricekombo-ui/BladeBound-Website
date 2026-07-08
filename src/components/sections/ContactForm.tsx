@@ -5,20 +5,29 @@ import Button from "@/components/ui/Button";
 import { SITE } from "@/lib/constants";
 
 export default function ContactForm() {
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    // Replace with your preferred form handler: Formspree, Resend, or a Next.js API route
-    setSubmitted(true);
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      setStatus(res.ok ? "done" : "error");
+    } catch {
+      setStatus("error");
+    }
   }
 
-  if (submitted) {
+  if (status === "done") {
     return (
       <div className="bg-ember/10 border border-ember/30 rounded-lg p-6">
         <p className="text-bone font-medium mb-1">Message received.</p>
@@ -99,9 +108,14 @@ export default function ContactForm() {
         />
       </div>
 
-      <Button type="submit" variant="primary" size="md">
-        Send Message
+      <Button type="submit" variant="primary" size="md" disabled={status === "sending"}>
+        {status === "sending" ? "Sending…" : "Send Message"}
       </Button>
+      {status === "error" && (
+        <p className="text-red-400 text-sm">
+          Something went wrong sending your message. Try again, or email us directly below.
+        </p>
+      )}
       <p className="text-stone text-xs mt-2">
         Or email directly:{" "}
         <a href={SITE.email} className="text-ember hover:underline">

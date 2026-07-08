@@ -113,7 +113,7 @@ export default function SupportPage() {
       <section className="border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
           <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-4">
-            The Armory
+            Membership · The Armory
           </span>
           <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-bone max-w-3xl leading-tight mb-6">
             Arm Your Table
@@ -204,7 +204,7 @@ export default function SupportPage() {
 
         {/* Free samples — visible proof of Forge quality */}
         {FREE_SAMPLES.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div id="samples" className="scroll-mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             {FREE_SAMPLES.map((item) => (
               <div key={item.title} className="rounded-lg overflow-hidden border border-ember/30 bg-shadow/10 flex flex-col group">
                 <a
@@ -232,7 +232,7 @@ export default function SupportPage() {
                   {item.download && (
                     <a
                       href={item.download}
-                      download
+                      download={`BladeBound - ${item.title.replace(/[^\w\s-]/g, "").trim()}.jpg`}
                       className="flex-shrink-0 px-3.5 py-2 rounded-md bg-ember text-void text-xs font-semibold uppercase tracking-wider hover:bg-ember/90 transition-colors"
                     >
                       Download
@@ -255,7 +255,7 @@ export default function SupportPage() {
               <div className="absolute inset-0 opacity-20 blur-2xl bg-gradient-to-br from-ember/40 via-transparent to-transparent group-hover:opacity-30 transition-opacity" />
               <div className="relative">
                 <div className="w-8 h-8 rounded-full bg-void border border-ember/30 flex items-center justify-center mb-4">
-                  <svg className="w-3.5 h-3.5 text-ember" viewBox="0 0 24 24" fill="currentColor">
+                  <svg className="w-3.5 h-3.5 text-ember" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Locked">
                     <path d="M12 1a5 5 0 00-5 5v3H6a2 2 0 00-2 2v9a2 2 0 002 2h12a2 2 0 002-2v-9a2 2 0 00-2-2h-1V6a5 5 0 00-5-5zm-3 8V6a3 3 0 116 0v3H9z" />
                   </svg>
                 </div>

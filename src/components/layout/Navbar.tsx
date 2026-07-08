@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { NAV_LINKS, LINKS } from "@/lib/constants";
+import { ExternalIcon } from "@/components/ui/Button";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -61,9 +62,10 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                className="group relative text-xs text-stone hover:text-bone transition-colors duration-200"
+                className="group relative inline-flex items-center gap-1 text-xs text-stone hover:text-bone transition-colors duration-200"
               >
                 {link.label}
+                {link.external && <ExternalIcon />}
                 <span className="absolute bottom-0 left-0 w-0 h-px bg-ember group-hover:w-full transition-all duration-300" />
               </Link>
             ))}
@@ -92,9 +94,10 @@ export default function Navbar() {
                 href={link.href}
                 {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 onClick={() => setOpen(false)}
-                className="py-2.5 text-sm text-stone hover:text-bone transition-colors"
+                className="py-2.5 text-sm text-stone hover:text-bone transition-colors inline-flex items-center gap-1.5"
               >
                 {link.label}
+                {link.external && <ExternalIcon />}
               </Link>
             ))}
             <div className="pt-3 flex flex-col gap-2 border-t border-white/5 mt-2">

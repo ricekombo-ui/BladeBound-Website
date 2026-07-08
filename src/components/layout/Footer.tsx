@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LINKS, NAV_LINKS, SITE } from "@/lib/constants";
+import { ExternalIcon } from "@/components/ui/Button";
 
 export default function Footer() {
   return (
@@ -44,9 +45,10 @@ export default function Footer() {
                   <Link
                     href={link.href}
                     {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                    className="text-stone hover:text-bone text-sm transition-colors"
+                    className="text-stone hover:text-bone text-sm transition-colors inline-flex items-center gap-1"
                   >
                     {link.label}
+                    {link.external && <ExternalIcon />}
                   </Link>
                 </li>
               ))}

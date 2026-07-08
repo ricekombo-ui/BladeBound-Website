@@ -148,10 +148,30 @@ export default function DiceField() {
       animRef.current = requestAnimationFrame(animate);
     };
 
+    // Static render for users who prefer reduced motion
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const die of diceRef.current) {
+        drawD12(ctx, die.x, die.y, die.size, die.rotation, die.type, die.opacity);
+      }
+      return () => window.removeEventListener("resize", resize);
+    }
+
+    // Pause the loop while the tab is hidden
+    const handleVisibility = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(animRef.current);
+      } else {
+        animRef.current = requestAnimationFrame(animate);
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
     animate();
 
     return () => {
       window.removeEventListener("resize", resize);
+      document.removeEventListener("visibilitychange", handleVisibility);
       cancelAnimationFrame(animRef.current);
     };
   }, []);
@@ -161,6 +181,7 @@ export default function DiceField() {
       ref={canvasRef}
       className="fixed inset-0 z-0 pointer-events-none"
       style={{ opacity: 0.6 }}
+      aria-hidden="true"
     />
   );
 }

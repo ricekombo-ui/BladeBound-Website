@@ -10,41 +10,61 @@ export const metadata: Metadata = {
     "Free Daggerheart tools, connection questions, build guides, and beginner resources from BladeBound.",
 };
 
-const freeResources = [
+const freeResources: {
+  title: string;
+  description: string;
+  status: "Free Download" | "Free via Discord" | "Coming Soon";
+  href?: string;
+  cta?: string;
+  external?: boolean;
+}[] = [
+  {
+    title: "Class Quick Guides",
+    description:
+      "Full build infographics for the Stalwart Guardian, Troubadour Bard, and Elemental Origin Sorcerer. Stats, features, loadouts, and leveling notes on a single sheet each.",
+    status: "Free Download",
+    href: "/armory#samples",
+    cta: "Download in the Armory",
+  },
   {
     title: "Connection Question Pack",
     description:
       "A curated set of pre-session connection questions designed for Daggerheart tables. Use them in session zero or between sessions to deepen character bonds.",
-    status: "Free Download",
-    href: "#",
+    status: "Free via Discord",
+    href: LINKS.discord,
+    cta: "Join Discord to Access",
+    external: true,
   },
   {
     title: "Daggerheart Beginner Guide",
     description:
       "A plain-language overview of the core Daggerheart rules, written for players coming from D&D or other systems. What changes, what stays the same, and what to focus on first.",
-    status: "Free Download",
-    href: "#",
+    status: "Free via Discord",
+    href: LINKS.discord,
+    cta: "Join Discord to Access",
+    external: true,
   },
   {
     title: "Session Zero Framework",
     description:
       "A structured approach to running session zero for a Daggerheart campaign. Covers safety tools, expectations, tone-setting, and character connection.",
-    status: "Free Download",
-    href: "#",
+    status: "Free via Discord",
+    href: LINKS.discord,
+    cta: "Join Discord to Access",
+    external: true,
   },
   {
     title: "GM Prep Template",
     description:
       "A lightweight session prep format designed for Daggerheart's narrative structure. Scenes, NPCs, beats, and fallbacks built into one document.",
     status: "Coming Soon",
-    href: "#",
   },
 ];
 
 const upcomingResources = [
   {
     title: "Class Build Guides",
-    description: "Practical builds for every Daggerheart class, with notes on how to get the most out of each at different tiers.",
+    description: "Practical builds for every Daggerheart class, with notes on how to get the most out of each at different tiers. Three are already free in the Armory — the rest are on the way.",
     status: "In Development",
   },
   {
@@ -103,9 +123,14 @@ export default function ResourcesPage() {
               </div>
               <h3 className="font-serif text-lg text-bone mb-2">{item.title}</h3>
               <p className="text-stone text-sm leading-relaxed mb-4">{item.description}</p>
-              {item.status === "Free Download" ? (
-                <Button href={LINKS.discord} variant="secondary" size="sm" external>
-                  Join Discord to Access
+              {item.href ? (
+                <Button
+                  href={item.href}
+                  variant={item.status === "Free Download" ? "primary" : "secondary"}
+                  size="sm"
+                  external={item.external}
+                >
+                  {item.cta}
                 </Button>
               ) : (
                 <span className="text-stone text-xs italic">Coming soon</span>

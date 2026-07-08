@@ -29,6 +29,21 @@ const variants: Record<Variant, string> = {
     "bg-transparent border border-bone/20 hover:border-bone/50 text-bone",
 };
 
+export function ExternalIcon() {
+  return (
+    <svg
+      className="inline-block w-[0.7em] h-[0.7em] opacity-60 flex-none"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2.5}
+      aria-hidden="true"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M9 7h8v8" />
+    </svg>
+  );
+}
+
 const sizes: Record<Size, string> = {
   sm: "px-4 py-1.5 text-sm",
   md: "px-6 py-2.5 text-sm",
@@ -65,6 +80,7 @@ export default function Button({
         {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       >
         {children}
+        {external && <ExternalIcon />}
       </Link>
     );
   }

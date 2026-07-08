@@ -235,13 +235,11 @@ export default function DualityLanding() {
   const enteredRef = useRef(false);
   const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // On mount: reveal splash only if no visit in the last 24 hours
+  // On mount: reveal splash only for first-time visitors.
+  // Anyone who has entered before goes straight to the site.
   useEffect(() => {
-    const TWENTY_FOUR_H = 24 * 60 * 60 * 1000;
     try {
-      const ts = localStorage.getItem("bb_entered");
-      const isRecent = ts && Date.now() - parseInt(ts, 10) < TWENTY_FOUR_H;
-      if (!isRecent) setPhase("idle");
+      if (!localStorage.getItem("bb_entered")) setPhase("idle");
     } catch {
       // localStorage unavailable — show splash
       setPhase("idle");
@@ -326,7 +324,7 @@ export default function DualityLanding() {
         localStorage.setItem("bb_result", dom);
         setPhase("exit");
         setTimeout(() => setPhase("done"), 1600);
-      }, 7200);
+      }, 4200);
     }, ROLL + 200);
   }, [phase, cycleNumbers]);
 
@@ -429,16 +427,20 @@ export default function DualityLanding() {
           {/* Roll CTA */}
           <AnimatePresence>
             {phase === "idle" && (
-              <motion.button
-                className="dl-btn-roll"
-                onClick={performRoll}
+              <motion.div
+                className="dl-cta-col"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.7, delay: 0.2 }}
               >
-                Roll Duality
-              </motion.button>
+                <button className="dl-btn-roll" onClick={performRoll}>
+                  Roll Duality
+                </button>
+                <button className="dl-enter-link" onClick={skip} onMouseEnter={() => sound?.tick(0.05)}>
+                  Enter site →
+                </button>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
@@ -577,6 +579,18 @@ export default function DualityLanding() {
         .dl-result-enter:hover { border-color: rgba(213,96,71,0.7); background: rgba(213,96,71,0.08); }
         .dl-result-enter:active { transform: scale(0.97); }
 
+        .dl-cta-col {
+          display: flex; flex-direction: column; align-items: center; gap: 1.1rem;
+        }
+        .dl-enter-link {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase;
+          color: rgba(253,242,225,0.4); background: transparent;
+          border: none; padding: 0.4rem 1rem; cursor: pointer; outline: none;
+          transition: color 200ms;
+        }
+        .dl-enter-link:hover { color: rgba(253,242,225,0.85); }
+
         .dl-btn-roll {
           font-family: 'Inter', system-ui, sans-serif;
           font-size: 0.7rem; font-weight: 600;
@@ -611,7 +625,7 @@ export default function DualityLanding() {
           border: 1px solid rgba(253,242,225,0.1);
           padding: 0.6rem 1.4rem; cursor: pointer; outline: none;
           transition: color 200ms, border-color 200ms;
-          opacity: 0; animation: dl-fade 1s 3s ease-out forwards;
+          opacity: 0; animation: dl-fade 1s 1s ease-out forwards;
         }
         .dl-skip:hover { color: rgba(253,242,225,0.7); border-color: rgba(253,242,225,0.3); }
 

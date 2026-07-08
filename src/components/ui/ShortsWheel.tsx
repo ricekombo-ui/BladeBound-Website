@@ -18,7 +18,7 @@ function ShortThumbnail({
   onClick: () => void;
   side: "left" | "right";
 }) {
-  const thumbUrl = `https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`;
+  const thumbUrl = `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`;
   return (
     <button
       onClick={onClick}
@@ -53,7 +53,7 @@ function ShortThumbnail({
 }
 
 function ShortCenter({ video, active }: { video: VideoItem; active: boolean }) {
-  const thumbUrl = `https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`;
+  const thumbUrl = `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`;
   return (
     <div className="relative overflow-hidden rounded-2xl border border-ember/20 shadow-2xl shadow-ember/10 aspect-[9/16] w-48 md:w-56 flex-none">
       {active ? (
@@ -77,7 +77,10 @@ function ShortCenter({ video, active }: { video: VideoItem; active: boolean }) {
   );
 }
 
-export default function ShortsWheel({ shorts }: { shorts: VideoItem[] }) {
+const MAX_SHORTS = 10;
+
+export default function ShortsWheel({ shorts: allShorts }: { shorts: VideoItem[] }) {
+  const shorts = allShorts.slice(0, MAX_SHORTS);
   const [centerIndex, setCenterIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -112,7 +115,7 @@ export default function ShortsWheel({ shorts }: { shorts: VideoItem[] }) {
         {/* Left nav arrow */}
         <button
           onClick={goLeft}
-          className="w-9 h-9 flex-none rounded-full bg-void border border-white/10 flex items-center justify-center text-stone hover:text-ember hover:border-ember/30 transition-all duration-200"
+          className="w-11 h-11 flex-none rounded-full bg-void border border-white/10 flex items-center justify-center text-stone hover:text-ember hover:border-ember/30 transition-all duration-200"
           aria-label="Previous short"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -142,7 +145,7 @@ export default function ShortsWheel({ shorts }: { shorts: VideoItem[] }) {
         {/* Right nav arrow */}
         <button
           onClick={goRight}
-          className="w-9 h-9 flex-none rounded-full bg-void border border-white/10 flex items-center justify-center text-stone hover:text-ember hover:border-ember/30 transition-all duration-200"
+          className="w-11 h-11 flex-none rounded-full bg-void border border-white/10 flex items-center justify-center text-stone hover:text-ember hover:border-ember/30 transition-all duration-200"
           aria-label="Next short"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>

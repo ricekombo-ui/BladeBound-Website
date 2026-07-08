@@ -161,13 +161,31 @@ export default function ParticleField() {
       animId = requestAnimationFrame(draw);
     }
 
+    // Skip the animation entirely for users who prefer reduced motion
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return () => {
+        delete window.emberBurst;
+      };
+    }
+
+    // Pause the loop while the tab is hidden
+    function handleVisibility() {
+      if (document.hidden) {
+        cancelAnimationFrame(animId);
+      } else {
+        animId = requestAnimationFrame(draw);
+      }
+    }
+
     init();
     draw();
     window.addEventListener("resize", init);
+    document.addEventListener("visibilitychange", handleVisibility);
 
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", init);
+      document.removeEventListener("visibilitychange", handleVisibility);
       delete window.emberBurst;
     };
   }, []);

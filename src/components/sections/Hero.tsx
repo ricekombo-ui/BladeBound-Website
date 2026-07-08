@@ -24,6 +24,8 @@ const FALLBACK_VIDEOS: FeaturedVideo[] = [
 
 export default function Hero({ featuredVideos }: { featuredVideos?: FeaturedVideo[] }) {
   const videos = featuredVideos ?? FALLBACK_VIDEOS;
+  // Index 1 is "Most Recent" (see FEATURED_LABELS)
+  const latest = videos[1] ?? videos[0];
   const [entered, setEntered] = useState(false);
 
   useEffect(() => {
@@ -108,26 +110,44 @@ export default function Hero({ featuredVideos }: { featuredVideos?: FeaturedVide
 
           </div>
 
-          {/* Logo on right side — large and centered in open space */}
+          {/* Latest episode on right side — always fresh, always clickable */}
           <div
-            className="hidden lg:flex flex-col items-center justify-center px-12 xl:px-20"
+            className="hidden lg:flex flex-col justify-center w-[26rem] xl:w-[30rem]"
             style={{
               opacity: entered ? 1 : 0,
-              transform: entered ? "none" : "scale(0.8)",
+              transform: entered ? "none" : "scale(0.92)",
               transition: "all 1s cubic-bezier(0.22, 1, 0.36, 1) 400ms",
             }}
           >
-            <div className="relative">
-              <div className="absolute -inset-12 rounded-full bg-ember/5 blur-[60px] animate-glow-pulse" />
-              <img
-                src="/logo.png"
-                alt="BladeBound"
-                className="relative w-72 h-72 xl:w-80 xl:h-80 rounded-full object-cover shadow-2xl shadow-ember/20 ring-2 ring-ember/20"
-              />
-            </div>
-            <span className="mt-5 font-serif text-xl text-bone/60 tracking-widest uppercase">
-              BladeBound
-            </span>
+            <a
+              href={`https://www.youtube.com/watch?v=${latest.id}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative block rounded-xl overflow-hidden border border-white/10 hover:border-ember/40 shadow-2xl shadow-ember/10 transition-colors"
+            >
+              <div className="absolute -inset-10 rounded-full bg-ember/5 blur-[60px] animate-glow-pulse pointer-events-none" />
+              <div className="relative aspect-video overflow-hidden">
+                <img
+                  src={`https://i.ytimg.com/vi/${latest.id}/hqdefault.jpg`}
+                  alt={latest.title}
+                  className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-void/90 via-transparent to-transparent" />
+                <span className="absolute top-3 left-3 bg-ember text-void text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded">
+                  Latest Episode
+                </span>
+                <span className="absolute inset-0 flex items-center justify-center">
+                  <span className="w-14 h-14 rounded-full bg-ember/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                    <svg className="w-5 h-5 text-void ml-0.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </span>
+                </span>
+                <p className="absolute bottom-3 left-4 right-4 text-bone text-sm font-medium leading-snug line-clamp-2">
+                  {latest.title}
+                </p>
+              </div>
+            </a>
           </div>
         </div>
 
