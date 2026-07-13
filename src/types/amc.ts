@@ -6,6 +6,7 @@ export interface Profile {
   name: string;
   role: UserRole;
   avatar_color: string;
+  email: string | null;
   created_at: string;
 }
 
@@ -101,6 +102,18 @@ export interface CheckIn {
   plan: string | null;
   created_at: string;
   profile?: Profile;
+}
+
+// ── Daily check-in links ────────────────────────────────────────────────────
+
+export interface CheckinToken {
+  id: string;
+  token: string;
+  profile_id: string;
+  date: string;
+  expires_at: string;
+  used_at: string | null;
+  created_at: string;
 }
 
 // ── Decisions ────────────────────────────────────────────────────────────────

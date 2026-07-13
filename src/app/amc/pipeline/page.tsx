@@ -4,41 +4,9 @@ import { useState, useEffect, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import AMCShell from "@/components/amc/AMCShell";
 import type { Profile, Task, TaskStatus, TaskType, TaskPriority, TaskSubtask, TaskAssignee } from "@/types/amc";
+import { COLUMNS, TYPE_COLORS, TYPE_LABELS, PRIORITY_COLORS, PRIORITY_LABELS } from "@/lib/amc/constants";
 
 // ── Config ────────────────────────────────────────────────────────────────────
-
-const COLUMNS: { key: TaskStatus; label: string; color: string }[] = [
-  { key: "backlog",     label: "Backlog",     color: "rgba(255,255,255,0.2)" },
-  { key: "ready",       label: "Ready",       color: "#6d9eeb" },
-  { key: "in_progress", label: "In Progress", color: "#d56047" },
-  { key: "review",      label: "Review",      color: "#ae8c41" },
-  { key: "scheduled",   label: "Scheduled",   color: "#8cae41" },
-  { key: "published",   label: "Published",   color: "#47ae70" },
-  { key: "repurpose",   label: "Repurpose",   color: "#9b6deb" },
-];
-
-const TYPE_COLORS: Record<TaskType, [string, string]> = {
-  yt:           ["rgba(213,96,71,0.15)",   "#d56047"],
-  infographic:  ["rgba(109,158,235,0.15)", "#6d9eeb"],
-  frame_design: ["rgba(174,140,65,0.15)",  "#ae8c41"],
-  actual_play:  ["rgba(71,174,112,0.15)",  "#47ae70"],
-  community:    ["rgba(155,109,235,0.15)", "#9b6deb"],
-  admin:        ["rgba(255,255,255,0.08)", "rgba(255,255,255,0.4)"],
-  tech:         ["rgba(140,174,65,0.15)",  "#8cae41"],
-};
-
-const TYPE_LABELS: Record<TaskType, string> = {
-  yt: "YT", infographic: "Infographic", frame_design: "Frame",
-  actual_play: "Actual Play", community: "Community", admin: "Admin", tech: "Tech",
-};
-
-const PRIORITY_COLORS: Record<TaskPriority, string> = {
-  high: "#e07070", medium: "#ae8c41", low: "rgba(255,255,255,0.25)",
-};
-
-const PRIORITY_LABELS: Record<TaskPriority, string> = {
-  high: "P1", medium: "P2", low: "P3",
-};
 
 const blank = (): Partial<Task> => ({
   title: "", description: "", status: "backlog", type: "yt",
@@ -280,7 +248,7 @@ export default function PipelinePage() {
                 const warn = col.key === "in_progress" && inProgressCount >= 3;
                 return (
                   <div key={col.key}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.45rem", marginBottom: "0.65rem", padding: "0 0.2rem" }}>
+                    <div title={col.hint} style={{ display: "flex", alignItems: "center", gap: "0.45rem", marginBottom: "0.65rem", padding: "0 0.2rem", cursor: "help" }}>
                       <div style={{ width: 7, height: 7, borderRadius: "50%", background: col.color, flexShrink: 0 }} />
                       <span style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.45)" }}>{col.label}</span>
                       <span style={{ fontSize: "0.62rem", color: warn ? "#e07070" : "rgba(255,255,255,0.2)", marginLeft: "auto" }}>

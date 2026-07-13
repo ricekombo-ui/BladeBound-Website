@@ -31,8 +31,9 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // Protect all /amc routes except login
-  if (pathname.startsWith("/amc") && pathname !== "/amc/login") {
+  // Protect all /amc routes except login and the token-authenticated daily check-in link
+  const isPublicAmcPath = pathname === "/amc/login" || pathname.startsWith("/amc/daily/");
+  if (pathname.startsWith("/amc") && !isPublicAmcPath) {
     if (!user) {
       const loginUrl = request.nextUrl.clone();
       loginUrl.pathname = "/amc/login";

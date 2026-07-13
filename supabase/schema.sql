@@ -11,6 +11,7 @@ create table if not exists public.profiles (
   name          text not null,
   role          text not null default 'member' check (role in ('admin', 'member')),
   avatar_color  text not null default '#d56047',
+  email         text,
   created_at    timestamptz default now() not null
 );
 
@@ -68,6 +69,17 @@ create table if not exists public.task_subtasks (
 
 alter table public.task_subtasks enable row level security;
 create policy "task_subtasks_all" on public.task_subtasks for all using (true);
+
+-- ── Task Assignees (Working On This) ───────────────────────────────────────
+
+create table if not exists public.task_assignees (
+  task_id     uuid references public.tasks(id) on delete cascade not null,
+  profile_id  uuid references public.profiles(id) on delete cascade not null,
+  primary key (task_id, profile_id)
+);
+
+alter table public.task_assignees enable row level security;
+create policy "task_assignees_all" on public.task_assignees for all using (true);
 
 -- ── Goals ─────────────────────────────────────────────────────────────────
 
@@ -152,3 +164,19 @@ create table if not exists public.decisions (
 
 alter table public.decisions enable row level security;
 create policy "decisions_all" on public.decisions for all using (true);
+
+-- ── Daily Check-in Links (magic links) ─────────────────────────────────────
+
+create table if not exists public.checkin_tokens (
+  id          uuid primary key default gen_random_uuid(),
+  token       text not null unique,
+  profile_id  uuid references public.profiles(id) on delete cascade not null,
+  date        date not null default current_date,
+  expires_at  timestamptz not null,
+  used_at     timestamptz,
+  created_at  timestamptz default now() not null,
+  unique (profile_id, date)
+);
+
+alter table public.checkin_tokens enable row level security;
+create policy "checkin_tokens_all" on public.checkin_tokens for all using (true);
