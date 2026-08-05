@@ -41,17 +41,14 @@ export default function GiveawayPage() {
       </section>
 
       <SectionWrapper tight>
-        <div className="max-w-xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <GiveawayForm />
-        </div>
-      </SectionWrapper>
-
-      <SectionWrapper tight>
-        <div className="max-w-xl">
-          <span className="inline-block text-ember/70 text-xs font-semibold uppercase tracking-widest mb-4">
-            Watch
-          </span>
-          <VideoEmbed videoId="https://youtu.be/heeZhfGo85I" title="Hope & Fear Giveaway" />
+          <div>
+            <span className="inline-block text-ember/70 text-xs font-semibold uppercase tracking-widest mb-4">
+              Watch
+            </span>
+            <VideoEmbed videoId="https://youtu.be/heeZhfGo85I" title="Hope & Fear Giveaway" />
+          </div>
         </div>
       </SectionWrapper>
     </>
