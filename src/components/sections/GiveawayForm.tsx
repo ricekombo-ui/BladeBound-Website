@@ -7,6 +7,7 @@ import { LINKS } from "@/lib/constants";
 export default function GiveawayForm() {
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "duplicate" | "error">("idle");
   const [form, setForm] = useState({ name: "", discord: "", youtube: "", email: "", zip: "" });
+  const [eligible, setEligible] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -137,11 +138,24 @@ export default function GiveawayForm() {
         />
       </div>
 
-      <Button type="submit" variant="primary" size="md" disabled={status === "sending"}>
+      <label className="flex items-start gap-2.5 cursor-pointer">
+        <input
+          type="checkbox"
+          required
+          checked={eligible}
+          onChange={e => setEligible(e.target.checked)}
+          className="mt-0.5 w-4 h-4 accent-ember flex-shrink-0"
+        />
+        <span className="text-stone text-sm leading-relaxed">
+          I confirm I am 18 years of age or older and have a shipping address within the United States.
+        </span>
+      </label>
+
+      <Button type="submit" variant="primary" size="md" disabled={status === "sending" || !eligible}>
         {status === "sending" ? "Entering…" : "Enter the Giveaway"}
       </Button>
       {status === "error" && (
-        <p className="text-red-400 text-sm">Something went wrong — try again in a moment.</p>
+        <p className="text-red-400 text-sm">Something went wrong. Try again in a moment.</p>
       )}
     </form>
   );
