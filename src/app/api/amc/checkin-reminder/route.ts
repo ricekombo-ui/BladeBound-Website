@@ -4,24 +4,11 @@ import { createServiceClient } from "@/lib/supabase/service";
 import type { Profile } from "@/types/amc";
 
 const TIMEZONE = "America/New_York";
-const TARGET_HOUR = 17; // 5pm local
 
-function isTargetHourNow(): boolean {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: TIMEZONE,
-    hour: "numeric",
-    hour12: false,
-    weekday: "short",
-  }).formatToParts(new Date());
-
-  const hour = Number(parts.find(p => p.type === "hour")?.value);
-  const weekday = parts.find(p => p.type === "weekday")?.value ?? "";
-  const isWeekday = !["Sat", "Sun"].includes(weekday);
-
-  // hour12: false can report 24 for midnight in some environments — normalize
-  const normalizedHour = hour === 24 ? 0 : hour;
-  return isWeekday && normalizedHour === TARGET_HOUR;
-}
+// Vercel Hobby plan only allows cron jobs to fire once per day, so this route
+// is scheduled directly at a fixed UTC time (see vercel.json) rather than
+// running hourly and self-checking for 5pm ET — which means the actual local
+// send time drifts by ~1hr across the twice-yearly DST change.
 
 function localDateString(): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: TIMEZONE }).format(new Date()); // en-CA gives YYYY-MM-DD
@@ -31,10 +18,6 @@ export async function GET(request: Request) {
   const auth = request.headers.get("authorization");
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
-
-  if (!isTargetHourNow()) {
-    return NextResponse.json({ skipped: "outside 5pm ET weekday window" });
   }
 
   const supabase = createServiceClient();

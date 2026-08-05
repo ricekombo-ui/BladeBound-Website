@@ -1,5 +1,5 @@
 {
   "crons": [
-    { "path": "/api/amc/checkin-reminder", "schedule": "0 * * * 1-5" }
+    { "path": "/api/amc/checkin-reminder", "schedule": "0 21 * * 1-5" }
   ]
 }
