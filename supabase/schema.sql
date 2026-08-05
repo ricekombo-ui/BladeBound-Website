@@ -180,3 +180,22 @@ create table if not exists public.checkin_tokens (
 
 alter table public.checkin_tokens enable row level security;
 create policy "checkin_tokens_all" on public.checkin_tokens for all using (true);
+
+-- ── Hope & Fear Giveaway ────────────────────────────────────────────────────
+
+create table if not exists public.giveaway_entries (
+  id          uuid primary key default gen_random_uuid(),
+  name        text not null,
+  discord     text not null,
+  youtube     text,
+  email       text not null unique,
+  zip_code    text not null,
+  won         boolean not null default false,
+  won_at      timestamptz,
+  created_at  timestamptz default now() not null
+);
+
+alter table public.giveaway_entries enable row level security;
+create policy "giveaway_insert" on public.giveaway_entries for insert with check (true);
+create policy "giveaway_read" on public.giveaway_entries for select using (auth.role() = 'authenticated');
+create policy "giveaway_update" on public.giveaway_entries for update using (auth.role() = 'authenticated');

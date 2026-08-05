@@ -12,6 +12,7 @@ const NAV = [
   { href: "/amc/goals",      label: "Goals",       icon: "◎" },
   { href: "/amc/check-ins",  label: "Check-ins",   icon: "✦" },
   { href: "/amc/decisions",  label: "Decisions",   icon: "◆" },
+  { href: "/amc/giveaway",   label: "Giveaway",    icon: "🎡" },
 ];
 
 interface AMCShellProps {

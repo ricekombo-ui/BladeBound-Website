@@ -116,6 +116,20 @@ export interface CheckinToken {
   created_at: string;
 }
 
+// ── Giveaway ─────────────────────────────────────────────────────────────────
+
+export interface GiveawayEntry {
+  id: string;
+  name: string;
+  discord: string;
+  youtube: string | null;
+  email: string;
+  zip_code: string;
+  won: boolean;
+  won_at: string | null;
+  created_at: string;
+}
+
 // ── Decisions ────────────────────────────────────────────────────────────────
 
 export interface Decision {
