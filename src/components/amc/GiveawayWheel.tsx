@@ -11,6 +11,95 @@ function easeOutCubic(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
+// ─── Sound Engine — synthesized, no audio files ─────────────────────────────
+class WheelSound {
+  private ctx: AudioContext | null = null;
+
+  private getCtx(): AudioContext {
+    if (!this.ctx) this.ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    return this.ctx;
+  }
+
+  private master(ctx: AudioContext, vol = 0.5) {
+    const g = ctx.createGain();
+    g.gain.value = vol;
+    g.connect(ctx.destination);
+    return g;
+  }
+
+  // The wheel's clacker — one short click per slice the pointer passes
+  tick(vol = 0.14) {
+    try {
+      const ctx = this.getCtx();
+      const buf = ctx.createBuffer(1, 400, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < 400; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / 25);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const f = ctx.createBiquadFilter();
+      f.type = "highpass";
+      f.frequency.value = 2800;
+      src.connect(f);
+      f.connect(this.master(ctx, vol));
+      src.start();
+    } catch {}
+  }
+
+  // A rising drone that builds tension across the whole spin, resolving at landing
+  suspense(durationSec: number) {
+    try {
+      const ctx = this.getCtx();
+      const now = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const filt = ctx.createBiquadFilter();
+      const env = ctx.createGain();
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(48, now);
+      osc.frequency.linearRampToValueAtTime(70, now + durationSec * 0.7);
+      osc.frequency.linearRampToValueAtTime(120, now + durationSec);
+      filt.type = "lowpass";
+      filt.frequency.setValueAtTime(200, now);
+      filt.frequency.linearRampToValueAtTime(900, now + durationSec);
+      filt.Q.value = 4;
+      env.gain.setValueAtTime(0.0001, now);
+      env.gain.linearRampToValueAtTime(0.16, now + durationSec * 0.6);
+      env.gain.linearRampToValueAtTime(0.28, now + durationSec * 0.96);
+      env.gain.exponentialRampToValueAtTime(0.0001, now + durationSec + 0.15);
+      osc.connect(filt);
+      filt.connect(env);
+      env.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + durationSec + 0.2);
+    } catch {}
+  }
+
+  // Resolving chime when the wheel lands on a winner
+  land() {
+    try {
+      const ctx = this.getCtx();
+      const g = this.master(ctx, 0.5);
+      const now = ctx.currentTime;
+      const freqs = [392, 523.25, 659.25, 784];
+      freqs.forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const env = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = freq;
+        const t = now + i * 0.07;
+        env.gain.setValueAtTime(0, t);
+        env.gain.linearRampToValueAtTime(0.3 - i * 0.02, t + 0.03);
+        env.gain.exponentialRampToValueAtTime(0.001, t + 1.0);
+        osc.connect(env);
+        env.connect(g);
+        osc.start(t);
+        osc.stop(t + 1.1);
+      });
+    } catch {}
+  }
+}
+
+const wheelSound = typeof window !== "undefined" ? new WheelSound() : null;
+
 export default function GiveawayWheel({
   entries,
   onMarkWon,
@@ -25,6 +114,7 @@ export default function GiveawayWheel({
   const [marking, setMarking] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const rafRef = useRef<number>(0);
+  const lastTickCountRef = useRef(0);
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
@@ -99,6 +189,8 @@ export default function GiveawayWheel({
 
     const duration = 5200;
     const t0 = performance.now();
+    lastTickCountRef.current = 0;
+    wheelSound?.suspense(duration / 1000);
 
     function frame(now: number) {
       const elapsed = now - t0;
@@ -106,12 +198,23 @@ export default function GiveawayWheel({
       const eased = easeOutCubic(t);
       rotationRef.current = start + (end - start) * eased;
       draw();
+
+      // Fire a tick for every slice boundary crossed since the last frame —
+      // naturally speeds up at the start and slows into suspense at the end.
+      const traveled = Math.abs(rotationRef.current - start);
+      const tickCount = Math.floor(traveled / slice);
+      if (tickCount > lastTickCountRef.current) {
+        for (let i = 0; i < tickCount - lastTickCountRef.current; i++) wheelSound?.tick();
+        lastTickCountRef.current = tickCount;
+      }
+
       if (t < 1) {
         rafRef.current = requestAnimationFrame(frame);
       } else {
         setSpinning(false);
         setShowDetails(false);
         setWinner(entries[winningIndex]);
+        wheelSound?.land();
       }
     }
     rafRef.current = requestAnimationFrame(frame);
