@@ -13,6 +13,15 @@ export default function GiveawayPage() {
   const [winners, setWinners] = useState<GiveawayEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [presenting, setPresenting] = useState(false);
+  const [revealed, setRevealed] = useState<Set<string>>(new Set());
+
+  function toggleReveal(id: string) {
+    setRevealed(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
 
   const load = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -73,18 +82,33 @@ export default function GiveawayPage() {
               <p style={{ color: "rgba(255,255,255,0.2)", fontSize: "0.75rem" }}>No winners drawn yet</p>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                {winners.map(w => (
-                  <div key={w.id} style={{ background: "#0d0a1a", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 8, padding: "0.75rem 0.9rem", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.5rem" }}>
-                    <div style={{ minWidth: 0 }}>
-                      <div style={{ fontSize: "0.8rem", color: "#fdf2e1", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{w.name}</div>
-                      <div style={{ fontSize: "0.65rem", color: "rgba(255,255,255,0.3)" }}>{w.discord}</div>
+                {winners.map(w => {
+                  const isRevealed = revealed.has(w.id);
+                  return (
+                    <div key={w.id} style={{ background: "#0d0a1a", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 8, padding: "0.75rem 0.9rem" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "0.5rem" }}>
+                        <div style={{ fontSize: "0.8rem", color: "#fdf2e1", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{w.name}</div>
+                        <button onClick={() => handleUndoWin(w.id)} title="Undo — put back in the pool"
+                          style={{ background: "none", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 5, color: "rgba(255,255,255,0.3)", fontSize: "0.65rem", padding: "0.3rem 0.55rem", cursor: "pointer", flexShrink: 0 }}>
+                          Undo
+                        </button>
+                      </div>
+                      {isRevealed ? (
+                        <div style={{ marginTop: "0.5rem", fontSize: "0.65rem", color: "rgba(255,255,255,0.4)", lineHeight: 1.6 }}>
+                          <div>Discord: {w.discord}</div>
+                          {w.youtube && <div>YouTube: {w.youtube}</div>}
+                          <div>Email: {w.email}</div>
+                          <div>Zip: {w.zip_code}</div>
+                        </div>
+                      ) : (
+                        <button onClick={() => toggleReveal(w.id)}
+                          style={{ background: "none", border: "none", color: "rgba(255,255,255,0.25)", fontSize: "0.65rem", padding: 0, marginTop: "0.35rem", cursor: "pointer" }}>
+                          👁 Show contact info
+                        </button>
+                      )}
                     </div>
-                    <button onClick={() => handleUndoWin(w.id)} title="Undo — put back in the pool"
-                      style={{ background: "none", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 5, color: "rgba(255,255,255,0.3)", fontSize: "0.65rem", padding: "0.3rem 0.55rem", cursor: "pointer", flexShrink: 0 }}>
-                      Undo
-                    </button>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

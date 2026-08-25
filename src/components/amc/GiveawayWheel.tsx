@@ -23,6 +23,7 @@ export default function GiveawayWheel({
   const [spinning, setSpinning] = useState(false);
   const [winner, setWinner] = useState<GiveawayEntry | null>(null);
   const [marking, setMarking] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const rafRef = useRef<number>(0);
 
   const draw = useCallback(() => {
@@ -109,6 +110,7 @@ export default function GiveawayWheel({
         rafRef.current = requestAnimationFrame(frame);
       } else {
         setSpinning(false);
+        setShowDetails(false);
         setWinner(entries[winningIndex]);
       }
     }
@@ -164,12 +166,21 @@ export default function GiveawayWheel({
           <h3 style={{ color: "#fdf2e1", fontSize: "1.4rem", fontFamily: "Playfair Display, Georgia, serif", margin: "0 0 1rem" }}>
             {winner.name}
           </h3>
-          <div style={{ textAlign: "left", fontSize: "0.8rem", color: "rgba(255,255,255,0.5)", marginBottom: "1.25rem", lineHeight: 1.8 }}>
-            <div>Discord: <span style={{ color: "#fdf2e1" }}>{winner.discord}</span></div>
-            {winner.youtube && <div>YouTube: <span style={{ color: "#fdf2e1" }}>{winner.youtube}</span></div>}
-            <div>Email: <span style={{ color: "#fdf2e1" }}>{winner.email}</span></div>
-            <div>Zip: <span style={{ color: "#fdf2e1" }}>{winner.zip_code}</span></div>
-          </div>
+
+          {showDetails ? (
+            <div style={{ textAlign: "left", fontSize: "0.8rem", color: "rgba(255,255,255,0.5)", marginBottom: "1.25rem", lineHeight: 1.8 }}>
+              <div>Discord: <span style={{ color: "#fdf2e1" }}>{winner.discord}</span></div>
+              {winner.youtube && <div>YouTube: <span style={{ color: "#fdf2e1" }}>{winner.youtube}</span></div>}
+              <div>Email: <span style={{ color: "#fdf2e1" }}>{winner.email}</span></div>
+              <div>Zip: <span style={{ color: "#fdf2e1" }}>{winner.zip_code}</span></div>
+            </div>
+          ) : (
+            <button onClick={() => setShowDetails(true)}
+              style={{ background: "none", border: "1px dashed rgba(255,255,255,0.2)", borderRadius: 6, color: "rgba(255,255,255,0.4)", fontSize: "0.72rem", padding: "0.5rem 1rem", cursor: "pointer", marginBottom: "1.25rem" }}>
+              👁 Show contact details (only you can see this)
+            </button>
+          )}
+
           <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center" }}>
             <button onClick={() => setWinner(null)}
               style={{ background: "rgba(255,255,255,0.05)", border: "none", borderRadius: 6, color: "rgba(255,255,255,0.5)", fontSize: "0.78rem", padding: "0.55rem 1.2rem", cursor: "pointer" }}>
