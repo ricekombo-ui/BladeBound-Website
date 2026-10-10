@@ -144,12 +144,8 @@ export default async function HomePage() {
         <ProofSection />
       </SectionWrapper>
 
-      {/* Community CTA, with hosts watermark */}
+      {/* Community CTA */}
       <div className="relative overflow-hidden">
-        <div
-          className="absolute inset-0 bg-center bg-no-repeat bg-contain opacity-[0.06] pointer-events-none"
-          style={{ backgroundImage: "url('/background-hosts.png')" }}
-        />
         <SectionWrapper tight>
           <ScrollReveal direction="up">
             <CTABlock

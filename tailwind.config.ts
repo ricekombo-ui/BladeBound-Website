@@ -21,7 +21,7 @@ const config: Config = {
       },
       fontFamily: {
         serif: ["Cinzel", "Georgia", "Cambria", "Times New Roman", "serif"],
-        sans: ["Instrument Sans", "system-ui", "sans-serif"],
+        sans: ["Albert Sans", "system-ui", "sans-serif"],
       },
       backgroundImage: {
         "void-gradient": "linear-gradient(135deg, #070416 0%, #0d0820 50%, #070416 100%)",

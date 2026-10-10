@@ -22,7 +22,7 @@ function ShortThumbnail({
   return (
     <button
       onClick={onClick}
-      className={`relative group overflow-hidden rounded-xl border border-white/5 hover:border-ember/30 transition-all duration-300 aspect-[9/16] w-28 md:w-36 flex-none cursor-pointer opacity-60 hover:opacity-90 ${
+      className={`relative group overflow-hidden rounded-xl border border-white/5 hover:border-ember/30 transition-all duration-300 aspect-[9/16] w-28 md:w-36 flex-none cursor-pointer opacity-60 hover:opacity-90 hidden sm:block ${
         side === "left" ? "hover:translate-x-1" : "hover:-translate-x-1"
       }`}
       aria-label={`Show: ${video.title}`}

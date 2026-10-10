@@ -504,7 +504,7 @@ export default function DualityLanding() {
           animation: dl-fade 0.9s 0.6s ease-out forwards;
         }
         .dl-subtitle {
-          font-family: 'Instrument Sans', system-ui, sans-serif;
+          font-family: 'Albert Sans', system-ui, sans-serif;
           font-size: 0.75rem; letter-spacing: 0.4em;
           text-transform: uppercase; color: rgba(253,242,225,0.7);
           margin-bottom: 3.5rem; opacity: 0;
@@ -524,19 +524,19 @@ export default function DualityLanding() {
         .dl-die-col { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
 
         .dl-die-label {
-          font-family: 'Instrument Sans', system-ui, sans-serif;
+          font-family: 'Albert Sans', system-ui, sans-serif;
           font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase;
         }
         .dl-lbl-hope { color: #e8784a; }
         .dl-lbl-fear { color: #b090e0; }
 
-        .dl-vs { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; opacity: 0.25; }
+        .dl-vs { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; opacity: 1; }
         .dl-vs-line { width: 1px; height: 40px; background: linear-gradient(to bottom,transparent,#fdf2e1,transparent); }
-        .dl-vs-text { font-family: 'Instrument Sans', system-ui, sans-serif; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: #a39aa9; }
+        .dl-vs-text { font-family: 'Albert Sans', system-ui, sans-serif; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: #a39aa9; }
 
         .dl-scores {
           display: flex; gap: 2rem; margin-top: 1.2rem;
-          font-family: 'Instrument Sans', system-ui, sans-serif;
+          font-family: 'Albert Sans', system-ui, sans-serif;
           font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: #a39aa9;
         }
         .dl-score { display: flex; align-items: center; gap: 0.5rem; }
@@ -553,7 +553,7 @@ export default function DualityLanding() {
           z-index: 10;
         }
         .dl-result-eye {
-          font-family: 'Instrument Sans', system-ui, sans-serif;
+          font-family: 'Albert Sans', system-ui, sans-serif;
           font-size: 0.75rem; letter-spacing: 0.4em; text-transform: uppercase;
           color: rgba(253,242,225,0.65); margin-bottom: 0.6rem;
         }
@@ -565,11 +565,11 @@ export default function DualityLanding() {
         .dl-hl-hope { color: #d56047; text-shadow: 0 0 24px rgba(213,96,71,0.5),0 0 60px rgba(213,96,71,0.15); }
         .dl-hl-fear { color: #9B7DB8; text-shadow: 0 0 24px rgba(105,53,76,0.6),0 0 60px rgba(68,56,89,0.25); }
         .dl-result-sub {
-          font-family: 'Instrument Sans', system-ui, sans-serif; font-size: 0.85rem;
+          font-family: 'Albert Sans', system-ui, sans-serif; font-size: 0.85rem;
           font-style: italic; color: rgba(253,242,225,0.45); margin-bottom: 2rem;
         }
         .dl-result-enter {
-          font-family: 'Instrument Sans', system-ui, sans-serif;
+          font-family: 'Albert Sans', system-ui, sans-serif;
           font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
           color: #d56047; background: transparent;
           border: 1px solid rgba(213,96,71,0.3);
@@ -583,7 +583,7 @@ export default function DualityLanding() {
           display: flex; flex-direction: column; align-items: center; gap: 1.1rem;
         }
         .dl-enter-link {
-          font-family: 'Instrument Sans', system-ui, sans-serif;
+          font-family: 'Albert Sans', system-ui, sans-serif;
           font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
           color: rgba(253,242,225,0.75); background: transparent;
           border: none; padding: 0.4rem 1rem; cursor: pointer; outline: none;
@@ -592,7 +592,7 @@ export default function DualityLanding() {
         .dl-enter-link:hover { color: rgba(253,242,225,0.85); }
 
         .dl-btn-roll {
-          font-family: 'Instrument Sans', system-ui, sans-serif;
+          font-family: 'Albert Sans', system-ui, sans-serif;
           font-size: 0.7rem; font-weight: 600;
           letter-spacing: 0.3em; text-transform: uppercase;
           color: #fdf2e1; background: transparent;
@@ -619,7 +619,7 @@ export default function DualityLanding() {
 
         .dl-skip {
           position: fixed; bottom: 2rem; right: 2.5rem; z-index: 500;
-          font-family: 'Instrument Sans', system-ui, sans-serif;
+          font-family: 'Albert Sans', system-ui, sans-serif;
           font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
           color: rgba(253,242,225,0.7); background: transparent;
           border: 1px solid rgba(253,242,225,0.1);
