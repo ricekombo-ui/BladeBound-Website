@@ -7,6 +7,8 @@ interface VideoEmbedProps {
   title: string;
   thumbnail?: string;
   isShort?: boolean;
+  /** Print the title on top of the thumbnail. Turn off when the caller renders its own caption. */
+  overlayTitle?: boolean;
 }
 
 function extractYouTubeId(url: string): string {
@@ -28,6 +30,7 @@ export default function VideoEmbed({
   title,
   thumbnail,
   isShort = false,
+  overlayTitle = true,
 }: VideoEmbedProps) {
   const [playing, setPlaying] = useState(false);
   const id = extractYouTubeId(videoId);
@@ -50,16 +53,18 @@ export default function VideoEmbed({
           <div className="absolute inset-0 bg-void/40 group-hover:bg-void/20 transition-colors duration-300" />
           {/* Play button */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-16 h-16 rounded-full bg-ember/90 flex items-center justify-center shadow-xl shadow-ember/30 group-hover:scale-110 transition-transform duration-300">
+            <div className="w-16 h-16 rounded-full bg-ember flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
               <svg className="w-6 h-6 text-void ml-1" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M8 5v14l11-7z" />
               </svg>
             </div>
           </div>
           {/* Title overlay */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-void/90 to-transparent">
-            <p className="text-bone text-sm font-medium">{title}</p>
-          </div>
+          {overlayTitle && (
+            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-void/90 to-transparent">
+              <p className="text-bone text-sm font-medium">{title}</p>
+            </div>
+          )}
         </button>
       ) : (
         <iframe

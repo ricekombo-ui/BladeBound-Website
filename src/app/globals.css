@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Cinzel:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Cinzel:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -10,7 +10,7 @@
 :root {
   --color-bg: #070416;
   --color-text: #fdf2e1;
-  --color-text-muted: #79717b;
+  --color-text-muted: #a39aa9;
   --color-surface: rgba(68, 56, 89, 0.1);
   --color-border: rgba(255, 255, 255, 0.05);
   --color-border-hover: rgba(213, 96, 71, 0.3);
@@ -22,7 +22,7 @@
   --color-shadow: #443859;
   --color-plum: #69354c;
   --color-dust: #ce7267;
-  --color-stone: #79717b;
+  --color-stone: #a39aa9;
   --color-accent: #914049;
 }
 
@@ -33,7 +33,7 @@ html {
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Instrument Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.5s ease, color 0.5s ease;

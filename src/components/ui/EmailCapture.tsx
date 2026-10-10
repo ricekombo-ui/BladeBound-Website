@@ -60,7 +60,7 @@ export default function EmailCapture({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="your@email.com"
-          className="flex-1 px-4 py-3 rounded-md bg-void border border-white/10 text-bone text-sm placeholder:text-stone/40 focus:border-ember/50 focus:outline-none transition-colors"
+          className="flex-1 px-4 py-3 rounded-md bg-void border border-white/10 text-bone text-sm placeholder:text-stone focus:border-ember/50 focus:outline-none transition-colors"
         />
         <button
           type="submit"

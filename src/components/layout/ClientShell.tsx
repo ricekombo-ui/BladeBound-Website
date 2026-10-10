@@ -4,7 +4,6 @@ import { ReactNode } from "react";
 import DualityLanding from "@/components/sections/DualityLanding";
 import ParticleField from "@/components/ui/ParticleField";
 import DiceField from "@/components/ui/DiceField";
-import FloatingPlatformBar from "@/components/ui/FloatingPlatformBar";
 import AmbientTheme from "@/components/ui/AmbientTheme";
 import SiteBackground from "@/components/ui/SiteBackground";
 
@@ -23,7 +22,6 @@ export default function ClientShell({ children }: { children: ReactNode }) {
       <DiceField />
       <AmbientTheme />
       {children}
-      <FloatingPlatformBar />
     </>
   );
 }

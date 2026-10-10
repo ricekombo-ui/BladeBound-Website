@@ -65,7 +65,7 @@ export default function ClassShowcase() {
                   {cls.domains.map((d, i) => (
                     <span
                       key={d}
-                      className="text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full border"
+                      className="text-xs font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full border"
                       style={{
                         color: i === 0 ? c1 : c2,
                         borderColor: `${i === 0 ? c1 : c2}44`,
@@ -94,7 +94,7 @@ export default function ClassShowcase() {
                   </span>
                   <span>
                     Watch the breakdown
-                    <span className="text-stone/50 text-xs ml-2">Free · Sage Touched</span>
+                    <span className="text-stone text-xs ml-2">Free · Sage Touched</span>
                   </span>
                 </a>
 
@@ -113,7 +113,7 @@ export default function ClassShowcase() {
                     </span>
                     <span>
                       {cls.sample.label}
-                      <span className="text-stone/50 text-xs ml-2">Free Sample</span>
+                      <span className="text-stone text-xs ml-2">Free Sample</span>
                     </span>
                   </a>
                 )}
@@ -132,7 +132,7 @@ export default function ClassShowcase() {
                   </span>
                   <span>
                     Build infographic
-                    <span className="text-ember/70 text-xs ml-2">The Forge · $10/mo</span>
+                    <span className="text-ember text-xs ml-2">The Forge · $10/mo</span>
                   </span>
                 </a>
               </div>

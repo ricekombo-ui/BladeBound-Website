@@ -157,7 +157,7 @@ export default function ShortsWheel({ shorts: allShorts }: { shorts: VideoItem[]
       {/* Label + title below center */}
       <div className="text-center">
         {centerLabel && (
-          <p className="text-ember text-[10px] font-semibold uppercase tracking-widest mb-1">
+          <p className="text-ember text-xs font-semibold uppercase tracking-widest mb-1">
             {centerLabel}
           </p>
         )}

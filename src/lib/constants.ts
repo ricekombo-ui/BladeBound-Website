@@ -17,13 +17,15 @@ export const LINKS = {
   email: "mailto:hello@bladebound.games",
 };
 
-export const NAV_LINKS: { label: string; href: string; external?: boolean }[] = [
-  { label: "About", href: "/about" },
-  { label: "Play", href: "/play" },
+// footerOnly links are kept out of the header so it stays scannable; the
+// footer and the mobile menu still list everything.
+export const NAV_LINKS: { label: string; href: string; external?: boolean; footerOnly?: boolean }[] = [
   { label: "Content", href: "/content" },
+  { label: "Play", href: "/play" },
   { label: "Community", href: "/community" },
   { label: "Membership", href: "/armory" },
   { label: "Shop", href: "https://shop.bladebound.games", external: true },
-  { label: "Resources", href: "/resources" },
-  { label: "Contact", href: "/contact" },
+  { label: "About", href: "/about" },
+  { label: "Resources", href: "/resources", footerOnly: true },
+  { label: "Contact", href: "/contact", footerOnly: true },
 ];

@@ -25,7 +25,7 @@ export default function GiveawayPage() {
               <p className="text-stone text-lg md:text-xl max-w-2xl leading-relaxed mb-4">
                 Enter below for a chance to win the Daggerheart Hope &amp; Fear expansion. The winner is drawn live on stream, August 25th at 8pm EST.
               </p>
-              <p className="text-stone/70 text-sm max-w-2xl leading-relaxed">
+              <p className="text-stone text-sm max-w-2xl leading-relaxed">
                 Must be 18 years or older to enter. Prize can only be shipped to an address within the United States.
               </p>
             </div>
@@ -44,7 +44,7 @@ export default function GiveawayPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           <GiveawayForm />
           <div>
-            <span className="inline-block text-ember/70 text-xs font-semibold uppercase tracking-widest mb-4">
+            <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-4">
               Watch
             </span>
             <VideoEmbed videoId="https://youtu.be/heeZhfGo85I" title="Hope & Fear Giveaway" />

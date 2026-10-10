@@ -7,66 +7,34 @@ import { ExternalIcon } from "@/components/ui/Button";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const headerLinks = NAV_LINKS.filter((l) => !l.footerOnly);
 
   return (
     <header className="sticky top-0 z-50 bg-void/90 backdrop-blur-md border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Left: Platform links (desktop) — flat underline style */}
-          <div className="hidden md:flex items-center gap-5 min-w-[200px]">
-            <Link
-              href={LINKS.youtube}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative text-xs font-medium text-red-400 hover:text-red-300 transition-colors"
-            >
-              YouTube
-              <span className="absolute bottom-0 left-0 w-0 h-px bg-red-400 group-hover:w-full transition-all duration-300" />
-            </Link>
-            <Link
-              href={LINKS.discord}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
-            >
-              Discord
-              <span className="absolute bottom-0 left-0 w-0 h-px bg-indigo-400 group-hover:w-full transition-all duration-300" />
-            </Link>
-            <Link
-              href={LINKS.patreon}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative text-xs font-medium text-ember hover:text-dust transition-colors"
-            >
-              Patreon
-              <span className="absolute bottom-0 left-0 w-0 h-px bg-ember group-hover:w-full transition-all duration-300" />
-            </Link>
-          </div>
-
-          {/* Center: Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group absolute left-1/2 -translate-x-1/2 md:relative md:left-auto md:translate-x-0">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2.5 group">
             <img
               src="/logo.png"
-              alt="BladeBound"
+              alt=""
               className="w-9 h-9 rounded-full object-cover ring-1 ring-ember/20 group-hover:ring-ember/50 transition-all duration-300"
             />
-            <span className="font-serif font-semibold text-bone text-lg tracking-wide hidden sm:block">
-              BladeBound
-            </span>
+            <span className="font-serif font-semibold text-bone text-lg tracking-wide">BladeBound</span>
           </Link>
 
-          {/* Right: Nav links (desktop) */}
-          <nav className="hidden md:flex items-center gap-5 min-w-[200px] justify-end">
-            {NAV_LINKS.map((link) => (
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-7" aria-label="Main">
+            {headerLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                className="group relative inline-flex items-center gap-1 text-xs text-stone hover:text-bone transition-colors duration-200"
+                className="group relative inline-flex items-center gap-1 text-sm text-bone/80 hover:text-bone transition-colors duration-200"
               >
                 {link.label}
                 {link.external && <ExternalIcon />}
-                <span className="absolute bottom-0 left-0 w-0 h-px bg-ember group-hover:w-full transition-all duration-300" />
+                <span className="absolute -bottom-1 left-0 w-0 h-px bg-ember group-hover:w-full transition-all duration-300" />
               </Link>
             ))}
           </nav>
@@ -74,8 +42,9 @@ export default function Navbar() {
           {/* Mobile hamburger */}
           <button
             onClick={() => setOpen(!open)}
-            className="md:hidden p-2 text-stone hover:text-bone transition-colors ml-auto"
+            className="md:hidden p-3 -mr-3 text-stone hover:text-bone transition-colors"
             aria-label="Toggle navigation"
+            aria-expanded={open}
           >
             <span className={`block w-5 h-0.5 bg-current transition-all duration-200 ${open ? "rotate-45 translate-y-[3px]" : "mb-1"}`} />
             {!open && <span className="block w-5 h-0.5 bg-current mb-1" />}
@@ -87,26 +56,26 @@ export default function Navbar() {
       {/* Mobile menu */}
       {open && (
         <div className="md:hidden bg-void/95 backdrop-blur-md border-t border-white/5 px-4 pb-5 animate-fade-in-up">
-          <nav className="flex flex-col gap-1 pt-3">
+          <nav className="flex flex-col pt-2" aria-label="Mobile">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 onClick={() => setOpen(false)}
-                className="py-2.5 text-sm text-stone hover:text-bone transition-colors inline-flex items-center gap-1.5"
+                className="py-3 text-base text-bone/90 hover:text-bone transition-colors inline-flex items-center gap-1.5"
               >
                 {link.label}
                 {link.external && <ExternalIcon />}
               </Link>
             ))}
-            <div className="pt-3 flex flex-col gap-2 border-t border-white/5 mt-2">
+            <div className="pt-3 flex gap-5 border-t border-white/5 mt-2">
               <Link href={LINKS.youtube} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}
                 className="py-2 text-sm font-medium text-red-400 hover:text-red-300 transition-colors">
                 YouTube
               </Link>
               <Link href={LINKS.discord} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}
-                className="py-2 text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
+                className="py-2 text-sm font-medium text-indigo-300 hover:text-indigo-200 transition-colors">
                 Discord
               </Link>
               <Link href={LINKS.patreon} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}

@@ -16,12 +16,12 @@ const config: Config = {
         shadow: "#443859",
         plum: "#69354c",
         dust: "#ce7267",
-        stone: "#79717b",
+        stone: "#a39aa9",
         accent: "#914049",
       },
       fontFamily: {
         serif: ["Cinzel", "Georgia", "Cambria", "Times New Roman", "serif"],
-        sans: ["Inter", "system-ui", "sans-serif"],
+        sans: ["Instrument Sans", "system-ui", "sans-serif"],
       },
       backgroundImage: {
         "void-gradient": "linear-gradient(135deg, #070416 0%, #0d0820 50%, #070416 100%)",

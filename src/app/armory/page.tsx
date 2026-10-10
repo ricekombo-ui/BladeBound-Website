@@ -162,7 +162,7 @@ export default function SupportPage() {
                 </span>
               )}
               <h3 className="font-serif text-2xl text-bone mb-0.5">{tier.name}</h3>
-              <p className="text-stone/70 text-xs italic mb-3">{tier.motto}</p>
+              <p className="text-stone text-xs italic mb-3">{tier.motto}</p>
               <div className="flex items-baseline gap-1 mb-4">
                 <span className={`text-3xl font-semibold ${tier.glowColor}`}>{tier.price}</span>
                 <span className="text-stone text-sm">/month</span>
@@ -220,7 +220,7 @@ export default function SupportPage() {
                     className="w-full h-full object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
                   />
                   <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-void/90 to-transparent" />
-                  <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-bone/80 text-[10px] uppercase tracking-widest border border-white/20 rounded-full px-3 py-1 bg-void/60 backdrop-blur-sm group-hover:border-ember/50 group-hover:text-ember transition-colors">
+                  <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-bone/80 text-xs uppercase tracking-widest border border-white/20 rounded-full px-3 py-1 bg-void/60 backdrop-blur-sm group-hover:border-ember/50 group-hover:text-ember transition-colors">
                     View Full Guide
                   </span>
                 </a>
@@ -260,7 +260,7 @@ export default function SupportPage() {
                   </svg>
                 </div>
                 <p className="text-bone text-sm font-semibold leading-snug mb-1">{item.title}</p>
-                <p className="text-stone/60 text-xs uppercase tracking-wider">{item.kind}</p>
+                <p className="text-stone text-xs uppercase tracking-wider">{item.kind}</p>
               </div>
             </div>
           ))}

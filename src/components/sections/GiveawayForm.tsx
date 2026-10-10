@@ -108,7 +108,7 @@ export default function GiveawayForm() {
         </div>
         <div>
           <label htmlFor="youtube" className="block text-bone text-sm font-medium mb-1.5">
-            YouTube Channel <span className="text-stone/50 font-normal">(optional)</span>
+            YouTube Channel <span className="text-stone font-normal">(optional)</span>
           </label>
           <input
             id="youtube"

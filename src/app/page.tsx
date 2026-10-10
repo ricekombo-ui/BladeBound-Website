@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Hero from "@/components/sections/Hero";
 import SectionWrapper from "@/components/ui/SectionWrapper";
-import FeatureCards from "@/components/sections/FeatureCards";
 import ProofSection from "@/components/sections/ProofSection";
 import CTABlock from "@/components/ui/CTABlock";
 import Button from "@/components/ui/Button";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import ShortsWheel from "@/components/ui/ShortsWheel";
-import EmberDivider from "@/components/ui/EmberDivider";
 import EmberGlow from "@/components/ui/EmberGlow";
 import DualityScroll from "@/components/ui/DualityScroll";
 import { LINKS } from "@/lib/constants";
@@ -19,39 +18,27 @@ export const metadata: Metadata = {
     "BladeBound is a home for narrative-first Daggerheart content, cinematic play, and a community built around serious tabletop craft.",
 };
 
-const whatWeOffer = [
+// Routes by intent: what a visitor is trying to do, not a list of what we offer.
+const startHere = [
   {
-    icon: "blade",
-    title: "Daggerheart Education",
-    body: "Deep-dive content covering classes, campaign frames, mechanics, and play philosophy. Whether you are new or experienced, there is something here for you.",
+    heading: "New to Daggerheart",
+    body: "Class guides, campaign frames, and rules explained by a GM with 200+ sessions behind the screen.",
+    href: "/content",
+    cta: "Start watching",
   },
   {
-    icon: "film",
-    title: "Cinematic Actual Play",
-    body: "Actual play content that prioritizes story, character, and meaningful stakes. Entertainment and system education in the same seat.",
+    heading: "Ready to play",
+    body: "One-shots and campaigns run story-first, built for first-timers and veterans alike.",
+    href: "/play",
+    cta: "See the games",
   },
   {
-    icon: "dice",
-    title: "Professional GM Services",
-    body: "Narrative-first Daggerheart games run by a GM with 200+ sessions of experience. One-shots and campaigns available through StartPlaying.",
-  },
-  {
-    icon: "hall",
-    title: "Community Space",
-    body: "A Discord community for Daggerheart players, GMs, and fans who care about the craft. Discussion, events, games, and more.",
-  },
-  {
-    icon: "book",
-    title: "Resources and Guides",
-    body: "Free tools, connection questions, build guides, and digital resources to improve your game and your table.",
-  },
-  {
-    icon: "flame",
-    title: "Supporter Benefits",
-    body: "Back the work and get early access, bonus resources, exclusive games, and a direct line to future projects.",
+    heading: "Need tools for your table",
+    body: "Free class quick-guides you can print or pull up mid-session.",
+    href: "/armory#samples",
+    cta: "Get the guides",
   },
 ];
-
 
 export default async function HomePage() {
   const [featuredVideos, shorts] = await Promise.all([
@@ -64,33 +51,35 @@ export default async function HomePage() {
       <DualityScroll />
       <Hero featuredVideos={featuredVideos} />
 
-      {/* What BladeBound Offers */}
-      <SectionWrapper id="what-we-offer">
+      {/* Start here: three routes by intent */}
+      <SectionWrapper tight id="start">
         <ScrollReveal direction="up">
-          <div className="mb-12">
-            <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
-              What We Do
-            </span>
-            <h2 className="font-serif text-3xl md:text-4xl text-bone mb-3">
-              Everything You Need at One Table
-            </h2>
-            <p className="text-stone text-base md:text-lg max-w-xl">
-              Content, community, games, and resources. All focused on Daggerheart, all built around narrative-first play.
-            </p>
-          </div>
+          <h2 className="font-serif text-3xl md:text-4xl text-bone mb-10 max-w-2xl">
+            Where do you want to start?
+          </h2>
         </ScrollReveal>
-        <FeatureCards features={whatWeOffer} columns={3} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-10">
+          {startHere.map((item, i) => (
+            <ScrollReveal key={item.heading} direction="up" delay={i * 120}>
+              <div className="border-t border-ember/40 pt-6 h-full flex flex-col">
+                <h3 className="font-serif text-xl text-bone mb-3">{item.heading}</h3>
+                <p className="text-stone text-base leading-relaxed mb-5 flex-1">{item.body}</p>
+                <Link
+                  href={item.href}
+                  className="inline-flex items-center gap-2 text-ember text-sm font-semibold hover:text-dust transition-colors"
+                >
+                  {item.cta} <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
       </SectionWrapper>
 
-      <EmberDivider />
-
-      {/* Watch Before You Decide — Shorts Wheel */}
+      {/* Shorts */}
       <SectionWrapper id="watch">
         <ScrollReveal direction="up">
-          <div className="mb-12 text-center">
-            <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
-              See It in Action
-            </span>
+          <div className="mb-10 text-center">
             <h2 className="font-serif text-3xl md:text-4xl text-bone mb-3">
               Watch Before You Decide
             </h2>
@@ -102,17 +91,12 @@ export default async function HomePage() {
         <ShortsWheel shorts={shorts} />
       </SectionWrapper>
 
-      <EmberDivider />
-
-      {/* Play CTA */}
+      {/* Play */}
       <SectionWrapper id="play" tight className="relative">
         <EmberGlow />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <ScrollReveal direction="left">
             <div>
-              <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
-                Play Daggerheart
-              </span>
               <h2 className="font-serif text-3xl md:text-4xl text-bone mb-4">
                 Sit at a Table That Takes Story Seriously
               </h2>
@@ -133,40 +117,34 @@ export default async function HomePage() {
             </div>
           </ScrollReveal>
           <ScrollReveal direction="right" delay={200}>
-            <div className="grid grid-cols-2 gap-4">
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
               {[
-                { title: "Narrative First", body: "Story drives every session. Mechanics serve the fiction, not the other way around." },
-                { title: "Beginner Friendly", body: "New to Daggerheart? New to TTRPGs? We have you covered with thorough onboarding." },
-                { title: "Cinematic Play", body: "Scenes are crafted. Moments are built. Your character will matter." },
-                { title: "Active GM Support", body: "Session zero, clear expectations, and a GM who knows the system deeply." },
+                { title: "Narrative first", body: "Story drives every session. Mechanics serve the fiction, not the other way around." },
+                { title: "Beginner friendly", body: "New to Daggerheart or to TTRPGs? Thorough onboarding gets you comfortable fast." },
+                { title: "Cinematic play", body: "Scenes are crafted and moments are built. Your character will matter." },
+                { title: "Real GM support", body: "Session zero, clear expectations, and a GM who knows the system deeply." },
               ].map((item) => (
-                <div key={item.title} className="bg-shadow/10 border border-white/5 rounded-lg p-4 hover:border-ember/20 hover:bg-shadow/20 transition-all duration-300">
-                  <h4 className="font-serif text-sm text-ember mb-2">{item.title}</h4>
-                  <p className="text-stone text-xs leading-relaxed">{item.body}</p>
+                <div key={item.title} className="border-l-2 border-ember/40 pl-4">
+                  <dt className="font-serif text-base text-bone mb-1">{item.title}</dt>
+                  <dd className="text-stone text-sm leading-relaxed">{item.body}</dd>
                 </div>
               ))}
-            </div>
+            </dl>
           </ScrollReveal>
         </div>
       </SectionWrapper>
 
-      <EmberDivider />
-
       {/* Proof */}
       <SectionWrapper tight>
         <ScrollReveal direction="up">
-          <div className="mb-10 text-center">
-            <h2 className="font-serif text-2xl md:text-3xl text-bone">
-              Built on Real Table Experience
-            </h2>
-          </div>
+          <h2 className="font-serif text-2xl md:text-3xl text-bone mb-10 text-center">
+            Built on Real Table Experience
+          </h2>
         </ScrollReveal>
         <ProofSection />
       </SectionWrapper>
 
-      <EmberDivider />
-
-      {/* Community CTA — with hosts watermark */}
+      {/* Community CTA, with hosts watermark */}
       <div className="relative overflow-hidden">
         <div
           className="absolute inset-0 bg-center bg-no-repeat bg-contain opacity-[0.06] pointer-events-none"
@@ -175,7 +153,6 @@ export default async function HomePage() {
         <SectionWrapper tight>
           <ScrollReveal direction="up">
             <CTABlock
-              label="Community"
               title="The Story Goes Further Together"
               body="Join the BladeBound Discord to connect with Daggerheart players and GMs, get updates on games and content, and find your next table."
               primaryText="Join the Discord"
@@ -188,16 +165,11 @@ export default async function HomePage() {
         </SectionWrapper>
       </div>
 
-      <EmberDivider />
-
-      {/* Support CTA */}
+      {/* Support */}
       <SectionWrapper tight>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <ScrollReveal direction="left">
             <div>
-              <span className="inline-block text-ember text-xs font-semibold uppercase tracking-widest mb-3">
-                Support the Work
-              </span>
               <h2 className="font-serif text-3xl md:text-4xl text-bone mb-4">
                 Back What You Want to See More Of
               </h2>
@@ -210,20 +182,20 @@ export default async function HomePage() {
             </div>
           </ScrollReveal>
           <ScrollReveal direction="right" delay={200}>
-            <div className="space-y-3">
+            <ul className="space-y-3">
               {[
                 "Early access to new content and releases",
                 "Bonus resources: connection questions, build guides, supplements",
                 "Access to exclusive supporter games",
                 "Behind-the-scenes updates and progress notes",
                 "Direct input on future projects and content direction",
-              ].map((item, i) => (
-                <div key={item} className="flex items-start gap-3 opacity-0 animate-fade-in-up" style={{ animationDelay: `${i * 100}ms`, animationFillMode: "forwards" }}>
-                  <span className="text-ember mt-0.5 flex-shrink-0">✓</span>
-                  <span className="text-stone text-sm">{item}</span>
-                </div>
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <span className="text-ember mt-0.5 flex-shrink-0" aria-hidden="true">✓</span>
+                  <span className="text-stone text-base">{item}</span>
+                </li>
               ))}
-            </div>
+            </ul>
           </ScrollReveal>
         </div>
       </SectionWrapper>
