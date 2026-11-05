@@ -23,7 +23,7 @@ create policy "giveaway_insert" on public.giveaway_entries
 
 -- Only authenticated (AMC) users can read/update the pool — needed for the wheel
 create policy "giveaway_read" on public.giveaway_entries
-  for select using (auth.role() = 'authenticated');
+  for select to authenticated using (public.is_amc_member());
 
 create policy "giveaway_update" on public.giveaway_entries
-  for update using (auth.role() = 'authenticated');
+  for update to authenticated using (public.is_amc_member()) with check (public.is_amc_member());

@@ -10,4 +10,6 @@ create table if not exists public.task_assignees (
 );
 
 alter table public.task_assignees enable row level security;
-create policy "task_assignees_all" on public.task_assignees for all using (true);
+-- Requires public.is_amc_member() from migration_amc_access.sql.
+create policy "task_assignees_all" on public.task_assignees for all to authenticated using (public.is_amc_member()) with check (public.is_amc_member());
+revoke all on public.task_assignees from anon;

@@ -39,6 +39,10 @@ export async function middleware(request: NextRequest) {
       loginUrl.pathname = "/amc/login";
       return NextResponse.redirect(loginUrl);
     }
+    const { data: profile, error } = await supabase.from("profiles").select("id").eq("user_id", user.id).maybeSingle();
+    if (error || !profile) {
+      return new NextResponse("This account does not have access to AMC.", { status: 403 });
+    }
   }
 
   // Redirect logged-in users away from login page

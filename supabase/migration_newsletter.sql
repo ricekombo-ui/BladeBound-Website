@@ -18,4 +18,4 @@ create policy "newsletter_insert" on public.newsletter_subscribers
 
 -- Only authenticated users (the team) can read the list
 create policy "newsletter_read" on public.newsletter_subscribers
-  for select using (auth.role() = 'authenticated');
+  for select to authenticated using (public.is_amc_member());

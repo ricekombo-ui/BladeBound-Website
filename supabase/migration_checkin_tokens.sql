@@ -24,4 +24,5 @@ create table if not exists public.checkin_tokens (
 alter table public.checkin_tokens enable row level security;
 
 create policy "checkin_tokens_all" on public.checkin_tokens
-  for all using (true);
+  for all to authenticated using (public.is_amc_member()) with check (public.is_amc_member());
+revoke all on public.checkin_tokens from anon;

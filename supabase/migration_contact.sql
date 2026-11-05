@@ -20,4 +20,4 @@ create policy "contact_insert" on public.contact_messages
 
 -- Only authenticated users (the team) can read messages
 create policy "contact_read" on public.contact_messages
-  for select using (auth.role() = 'authenticated');
+  for select to authenticated using (public.is_amc_member());
