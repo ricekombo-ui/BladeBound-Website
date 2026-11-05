@@ -2,6 +2,14 @@
 
 This branch only contains a standalone tester login and feedback form. It does not contain or protect the separate character app. Do not invite players or use real data until the character app is securely hosted, access is integrated, and both systems have passed end-to-end security checks.
 
+## Required campaign access
+
+- A beta account by itself must never grant access to a campaign, character, GM material, or the AMC system. A player must receive and redeem a link for a specific campaign; authorization must be checked on every character-app request, not just when a player enters the website.
+- Players may only access campaigns where they have an active membership. They can create and edit their own characters there; other players' characters are available only when explicitly shared, and then read-only. The existing character app already models these permissions; they must be preserved and re-tested during hosting and any authentication or storage migration.
+- A GM may manage only campaigns where they have a GM role. The owner needs an explicit, secure way to appoint another GM for the appropriate campaign, with permission checks and revocation. A normal player invitation must not confer GM access. The existing app has GM memberships but no verified in-app GM appointment workflow.
+- Use individually issued, single-use, expiring, revocable player invitations for the beta, and test replay, removal, and cross-campaign access. The existing reusable campaign link can be forwarded and used until disabled or regenerated, so it is not sufficient for this stricter beta flow. Invite links themselves are credentials and must be kept private; accepting one must be integrated with account setup so the player doesn't need a separate manual beta-membership step.
+- A person may have access to more than one campaign only if invited or explicitly appointed to each. Revoking membership must take effect on subsequent requests without granting access to other campaigns or AMC.
+
 ## Isolation and configuration
 
 1. Create a **separate** Supabase project for beta testing, if an unused free project is available. Never use the existing AMC project. The public URL must be different from `NEXT_PUBLIC_SUPABASE_URL`.
