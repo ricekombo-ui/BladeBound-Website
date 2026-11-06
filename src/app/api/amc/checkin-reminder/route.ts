@@ -16,7 +16,7 @@ function localDateString(): string {
 
 export async function GET(request: Request) {
   const auth = request.headers.get("authorization");
-  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
@@ -62,7 +62,7 @@ export async function GET(request: Request) {
     const link = `${process.env.NEXT_PUBLIC_SITE_URL}/amc/daily/${token}`;
 
     try {
-      await fetch("https://api.resend.com/emails", {
+      const response = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
@@ -75,7 +75,8 @@ export async function GET(request: Request) {
           text: `Quick 60-second update: ${link}\n\nNo login needed — tap the link, update your tasks, done.`,
         }),
       });
-      sent.push(profile.name);
+      if (response.ok) sent.push(profile.name);
+      else skipped.push(`${profile.name} (email failed)`);
     } catch {
       skipped.push(`${profile.name} (email failed)`);
     }

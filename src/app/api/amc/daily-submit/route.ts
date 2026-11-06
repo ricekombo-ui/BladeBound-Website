@@ -1,78 +1,30 @@
 import { NextResponse } from "next/server";
 import { createServiceClient } from "@/lib/supabase/service";
-import type { TaskStatus } from "@/types/amc";
-
-interface Body {
-  token: string;
-  taskUpdates: { taskId: string; status: TaskStatus }[];
-  subtaskUpdates: { subtaskId: string; completed: boolean }[];
-  checkIn: { energy: number; wins: string; blockers: string; plan: string };
-}
 
 export async function POST(request: Request) {
-  let body: Body;
+  if (request.headers.get("origin") !== new URL(request.url).origin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (!request.headers.get("content-type")?.toLowerCase().startsWith("application/json")) return NextResponse.json({ error: "Invalid request" }, { status: 415 });
   try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
-  }
-
-  if (!body.token) {
-    return NextResponse.json({ error: "Missing token" }, { status: 400 });
-  }
-
-  const supabase = createServiceClient();
-
-  const { data: tokenRow } = await supabase
-    .from("checkin_tokens")
-    .select("*")
-    .eq("token", body.token)
-    .single();
-
-  if (!tokenRow) {
-    return NextResponse.json({ error: "Invalid link" }, { status: 404 });
-  }
-  if (new Date(tokenRow.expires_at) < new Date()) {
-    return NextResponse.json({ error: "This link has expired" }, { status: 410 });
-  }
-
-  const profileId = tokenRow.profile_id as string;
-
-  await Promise.all([
-    ...(body.taskUpdates ?? []).map(u =>
-      supabase.from("tasks").update({ status: u.status }).eq("id", u.taskId)
-    ),
-    ...(body.subtaskUpdates ?? []).map(u =>
-      supabase.from("task_subtasks").update({ completed: u.completed }).eq("id", u.subtaskId)
-    ),
-  ]);
-
-  if (body.checkIn) {
-    const { energy, wins, blockers, plan } = body.checkIn;
-    const { data: existing } = await supabase
-      .from("check_ins")
-      .select("id")
-      .eq("user_id", profileId)
-      .eq("date", tokenRow.date)
-      .maybeSingle();
-
-    const payload = {
-      user_id: profileId,
-      date: tokenRow.date,
-      energy,
-      wins: wins || null,
-      blockers: blockers || null,
-      plan: plan || null,
-    };
-
-    if (existing) {
-      await supabase.from("check_ins").update(payload).eq("id", existing.id);
-    } else {
-      await supabase.from("check_ins").insert(payload);
+    const reader = request.body?.getReader();
+    if (!reader) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    const chunks: Uint8Array[] = []; let length = 0;
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      length += value.length;
+      if (length > 64000) { await reader.cancel(); return NextResponse.json({ error: "Request too large" }, { status: 413 }); }
+      chunks.push(value);
     }
+    const bytes = new Uint8Array(length); let offset = 0;
+    for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.length; }
+    const body: unknown = JSON.parse(new TextDecoder().decode(bytes));
+    if (!body || typeof body !== "object") return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    const input = body as Record<string, unknown>;
+    if (typeof input.token !== "string" || !Array.isArray(input.taskUpdates) || !Array.isArray(input.subtaskUpdates) || !input.checkIn || typeof input.checkIn !== "object") return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    const { error } = await createServiceClient().rpc("submit_daily_checkin", { p_token: input.token, p_tasks: input.taskUpdates, p_subtasks: input.subtaskUpdates, p_checkin: input.checkIn });
+    if (error) return NextResponse.json({ error: "Unable to complete check-in. The link may have expired or already been used." }, { status: 400 });
+    return NextResponse.json({ ok: true }, { headers: { "Cache-Control": "no-store" } });
+  } catch {
+    return NextResponse.json({ error: "Unable to complete check-in." }, { status: 400 });
   }
-
-  await supabase.from("checkin_tokens").update({ used_at: new Date().toISOString() }).eq("id", tokenRow.id);
-
-  return NextResponse.json({ ok: true });
 }

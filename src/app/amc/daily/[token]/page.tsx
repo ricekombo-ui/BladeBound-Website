@@ -3,7 +3,7 @@ import type { Profile, Task, CheckIn } from "@/types/amc";
 import DailyCheckinForm from "./DailyCheckinForm";
 
 export const dynamic = "force-dynamic";
-export const metadata = { robots: { index: false, follow: false } };
+export const metadata = { robots: { index: false, follow: false }, referrer: "no-referrer" as const };
 
 function ExpiredState({ message }: { message: string }) {
   return (
@@ -31,7 +31,7 @@ export default async function DailyCheckinPage({ params }: { params: Promise<{ t
   if (!tokenRow) {
     return <ExpiredState message="This link is invalid." />;
   }
-  if (new Date(tokenRow.expires_at) < new Date()) {
+  if (tokenRow.used_at || new Date(tokenRow.expires_at) <= new Date()) {
     return <ExpiredState message="This link has expired." />;
   }
 
